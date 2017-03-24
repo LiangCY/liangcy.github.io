@@ -1,8 +1,7 @@
 var firstDay = moment('2015-03-27');
 var now = moment();
-var days = now.diff(firstDay,'days');
-console.log(days);
-
+var days = now.diff(firstDay, 'days');
+$('#days').text(days);
 // var GameScore = Bmob.Object.extend("GameScore");
 // var gameScore = new GameScore();
 // gameScore.save({"score": 137}, {
