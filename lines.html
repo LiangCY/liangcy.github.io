@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Lines</title>
+  <style>
+    canvas {
+      cursor: pointer;
+      position: absolute;
+    }
+
+    .dots {
+      width: 1200px;
+      height: 720px;
+      position: absolute;
+    }
+
+    .dot {
+      position: absolute;
+      width: 9px;
+      height: 9px;
+      margin-left: -5px;
+      margin-top: -5px;
+      border-radius: 100%;
+      background: yellow;
+      border: 1px solid black;
+    }
+  </style>
+</head>
+<body>
+<canvas id="canvas" width="1200" height="720"></canvas>
+<div class="dots">
+</div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+<script>
+
+  var lines = [
+    [300, 40, 0, 600],
+    [320, 40, 100, 600],
+    [340, 40, 200, 600],
+    [360, 40, 300, 600],
+    [380, 40, 400, 600],
+    [400, 40, 500, 600],
+    [420, 40, 600, 600],
+    [440, 40, 700, 600],
+    [460, 40, 800, 600]
+  ];
+
+  var canvas;
+  var context;
+
+  canvas = document.getElementById("canvas");
+  context = canvas.getContext("2d");
+
+  lines.forEach(function (item) {
+    var line = drawLine.apply(null, item);
+
+    var $dot = $('<div class="dot"></div>');
+    $dot.css('left', item[0]);
+    $dot.css('top', item[1]);
+    $('.dots').append($dot);
+    $dot.on('mousedown', function () {
+      var $dot = $(this);
+      document.onmouseup = function () {
+        document.onmousemove = null;
+      };
+      document.onmousemove = function (e) {
+        var k = line.k;
+        var b = line.b;
+        if (Math.abs(k) >= 1) {
+
+          var y = e.clientY;
+          var x = 1 / k * y - b / k;
+          $dot.css('left', x);
+          $dot.css('top', y);
+        } else {
+          x = e.clientX;
+          y = k * x + b;
+          $dot.css('left', x);
+          $dot.css('top', y);
+        }
+      };
+    });
+  });
+
+
+  function drawLine(startX, startY, endX, endY) {
+    context.strokeStyle = "black";
+    context.lineWidth = 1;
+    context.moveTo(startX, startY);
+    context.lineTo(endX, endY);
+    context.stroke();
+
+    var k = (endY - startY) / (endX - startX);
+    var b = startY - (endY - startY) * startX / (endX - startX);
+    return {k: k, b: b}
+  }
+
+</script>
+</body>
+</html>
