@@ -16,31 +16,98 @@
     }
 
     .dots {
-      width: 1200px;
+      width: 1280px;
       height: 720px;
       position: absolute;
     }
 
     .dot {
       position: absolute;
-      width: 9px;
-      height: 9px;
-      margin-left: -4px;
-      margin-top: -4px;
+      width: 7px;
+      height: 7px;
+      margin-left: -3px;
+      margin-top: -3px;
       border-radius: 100%;
       background: yellow;
+      cursor: pointer;
+      /*-webkit-animation: move ease-in-out 4s;*/
+      /*-webkit-animation-iteration-count: infinite;*/
+      /*-webkit-animation-fill-mode: both;*/
+    }
+
+    @keyframes move {
+      0% {
+        left: 100px;
+        width: 8px;
+        background: yellow;
+      }
+      50% {
+        left: 900px;
+        width: 8px;
+        background: red;
+      }
+      100% {
+        left: 100px;
+        width: 8px;
+        background: yellow;
+      }
     }
   </style>
 </head>
 <body>
-<canvas id="canvas" width="1366" height="768"></canvas>
-<div class="dots">
-</div>
+<canvas id="canvas" width="1280" height="720"></canvas>
+<div class="dots"></div>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
 <script>
 
   var lines = [
-    [0, 20, 1366, 20]
+    [0, 42, 1280, 42],
+    [0, 57, 1280, 57],
+    [0, 73, 1280, 73],
+    [0, 89, 1280, 89],
+    [0, 103, 1280, 103],
+    [0, 120, 1280, 120],
+    [0, 137, 1280, 137],
+    [0, 150, 1280, 150],
+    [0, 165, 1280, 165],
+    [0, 180, 1280, 180],
+    [0, 194, 1280, 194],
+    [0, 209, 1280, 209],
+    [0, 224, 1280, 224],
+    [0, 239, 1280, 239],
+    [0, 255, 1280, 255],
+    [0, 269, 1280, 269],
+    [0, 284, 1280, 284],
+    [0, 297, 1280, 297],
+    [0, 309, 1280, 309],
+    [0, 325, 1280, 325],
+    [0, 339, 1280, 339],
+    [0, 353, 1280, 353],
+    [0, 366, 1280, 366],
+    [0, 381, 1280, 381],
+    [0, 394, 1280, 394],
+    [0, 408, 1280, 408],
+    [0, 423, 1280, 423],
+    [0, 437, 1280, 437],
+    [0, 450, 1280, 450],
+    [0, 459, 1280, 459],
+    [0, 471, 1280, 471],
+    [0, 485, 1280, 485],
+    [0, 497, 1280, 497],
+    [0, 511, 1280, 511],
+    [0, 524, 1280, 524],
+    [0, 534, 1280, 534],
+    [0, 545, 1280, 545],
+    [0, 558, 1280, 558],
+    [0, 570, 1280, 570],
+    [0, 583, 1280, 583],
+    [0, 596, 1280, 596],
+    [0, 604, 1280, 604],
+    [0, 615, 1280, 615],
+    [0, 627, 1280, 627],
+    [0, 640, 1280, 640],
+    [0, 652, 1280, 652],
+    [0, 664, 1280, 664]
   ];
 
   var canvas;
@@ -49,47 +116,50 @@
   canvas = document.getElementById("canvas");
   context = canvas.getContext("2d");
 
-  lines.forEach(function (item) {
+  lines.forEach(function (item, index) {
     var line = drawLine.apply(null, item);
-
-    var $dot = $('<div class="dot"></div>');
-    $dot.css('left', item[0]);
-    $dot.css('top', item[1]);
-    $('.dots').append($dot);
-    $dot.on('mousedown', function () {
-      var $dot = $(this);
-      document.onmouseup = function () {
-        document.onmousemove = null;
-      };
-      document.onmousemove = function (e) {
-        var k = line.k;
-        var b = line.b;
-        if (k !== undefined) {
-          if (Math.abs(k) >= 1) {
-            var y = e.clientY;
-            var x = 1 / k * y - b / k;
-            $dot.css('left', x);
-            $dot.css('top', y);
+    for (var i = 10; i > 0; i--) {
+      var $dot = $('<div class="dot"></div>');
+      $dot.css('left', item[2] - 10);
+      $dot.css('top', item[1]);
+      $dot.css('-webkit-animation-delay', index * 0.1 + 's');
+      $('.dots').append($dot);
+      $dot.on('mousedown', function () {
+        var $dot = $(this);
+        document.onmouseup = function () {
+          document.onmousemove = null;
+        };
+        document.onmousemove = function (e) {
+          var k = line.k;
+          var b = line.b;
+          if (k !== undefined) {
+            if (Math.abs(k) >= 1) {
+              var y = e.clientY;
+              var x = 1 / k * y - b / k;
+              $dot.css('left', x);
+              $dot.css('top', y);
+            } else {
+              x = e.clientX;
+              y = k * x + b;
+              $dot.css('left', x);
+              $dot.css('top', y);
+            }
           } else {
-            x = e.clientX;
-            y = k * x + b;
+            y = e.clientY;
+            x = b;
             $dot.css('left', x);
             $dot.css('top', y);
           }
-        } else {
-          y = e.clientY;
-          x = b;
-          $dot.css('left', x);
-          $dot.css('top', y);
-        }
-      };
-    });
+        };
+      });
+    }
+
   });
 
 
   function drawLine(startX, startY, endX, endY) {
-    context.strokeStyle = "white";
-    context.lineWidth = 1;
+    context.strokeStyle = "#333";
+    context.lineWidth = 4;
     context.moveTo(startX, startY);
     context.lineTo(endX, endY);
     context.stroke();
