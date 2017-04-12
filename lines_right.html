@@ -35,23 +35,23 @@
       /*-webkit-animation-fill-mode: both;*/
     }
 
-    @keyframes move {
-      0% {
-        left: 100px;
-        width: 8px;
-        background: yellow;
-      }
-      50% {
-        left: 900px;
-        width: 8px;
-        background: red;
-      }
-      100% {
-        left: 100px;
-        width: 8px;
-        background: yellow;
-      }
-    }
+    /*@keyframes move {*/
+    /*0% {*/
+    /*left: 100px;*/
+    /*width: 8px;*/
+    /*background: yellow;*/
+    /*}*/
+    /*50% {*/
+    /*left: 900px;*/
+    /*width: 8px;*/
+    /*background: red;*/
+    /*}*/
+    /*100% {*/
+    /*left: 100px;*/
+    /*width: 8px;*/
+    /*background: yellow;*/
+    /*}*/
+    /*}*/
   </style>
 </head>
 <body>
@@ -116,7 +116,7 @@
   canvas = document.getElementById("canvas");
   context = canvas.getContext("2d");
 
-  lines.forEach(function (item, index) {
+  lines_right.forEach(function (item, index) {
     var line = drawLine.apply(null, item);
     for (var i = 10; i > 0; i--) {
       var $dot = $('<div class="dot"></div>');
