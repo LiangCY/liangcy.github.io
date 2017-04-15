@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Lines</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background: black;
+    }
+
+    #line {
+      position: absolute;
+      top: 0;
+      height: 3px;
+      width: 100%;
+      background: white;
+    }
+
+    #num {
+      position: absolute;
+      width: 40px;
+      height: 40px;
+      top: 20px;
+      right: 10px;
+      color: yellow;
+    }
+  </style>
+</head>
+<body>
+<div id="line"></div>
+<div id="num"></div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+<script>
+  var $line = $('#line');
+  var $num = $('#num');
+  var y = 0;
+  $num.text(y);
+  document.onkeydown = function (e) {
+    switch (e.keyCode) {
+      case 40:
+        if (y < 800) {
+          y++;
+          $line.css('top', y + 'px');
+          $num.text(y);
+        }
+        break;
+      case 38:
+        if (y > 0) {
+          y--;
+          $line.css('top', y + 'px');
+          $num.text(y);
+        }
+        break;
+    }
+  };
+</script>
+</body>
+</html>
