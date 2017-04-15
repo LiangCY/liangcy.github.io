@@ -116,7 +116,7 @@
   canvas = document.getElementById("canvas");
   context = canvas.getContext("2d");
 
-  lines_right.forEach(function (item, index) {
+  lines.forEach(function (item, index) {
     var line = drawLine.apply(null, item);
     for (var i = 10; i > 0; i--) {
       var $dot = $('<div class="dot"></div>');
