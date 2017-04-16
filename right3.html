@@ -1,0 +1,609 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Lines</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background: black;
+    }
+
+    .line {
+      position: absolute;
+      height: 3px;
+    }
+
+    .item {
+      position: absolute;
+      top: 0;
+      height: 100%;
+    }
+
+  </style>
+</head>
+<body>
+<div id="box"></div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+<script>
+  var yOffsets = [39, 54, 70, 86, 100, 118, 134, 148, 163, 178, 192, 207, 222, 237, 253, 267, 282, 295, 307, 323, 337, 352, 365, 379, 392, 407, 421, 436, 449, 457, 470, 484, 496, 510, 523, 532, 544, 557, 569, 582, 595, 603, 614, 626, 639, 651, 663];
+  var xOffsets = [
+    [192, 276, 347, 414, 477, 540, 601, 661, 724, 789],
+    [208, 285, 353, 419, 481, 542, 603, 659, 719, 783],
+    [224, 295, 360, 424, 484, 544, 603, 657, 713, 771],
+    [240, 305, 367, 430, 488, 546, 603, 655, 708, 761],
+    [253, 314, 374, 434, 491, 548, 603, 654, 704, 753],
+    [265, 322, 382, 440, 495, 550, 604, 652, 700, 746],
+    [198, 270, 342, 409, 475, 540, 602, 666, 724, 786],
+    [214, 281, 349, 413, 478, 541, 602, 662, 718, 777],
+    [229, 293, 356, 419, 481, 542, 602, 659, 712, 767],
+    [246, 302, 363, 424, 484, 543, 602, 655, 705, 757],
+    [257, 312, 371, 428, 487, 545, 603, 652, 700, 748],
+    [270, 321, 378, 432, 489, 545, 601, 650, 697, 742],
+    [260, 314, 371, 428, 486, 543, 601, 652, 701, 745],
+    [250, 305, 363, 423, 482, 542, 601, 654, 705, 755],
+    [237, 295, 356, 417, 478, 540, 601, 656, 709, 763],
+    [222, 284, 347, 410, 474, 538, 601, 658, 715, 771],
+    [206, 272, 338, 402, 469, 534, 600, 661, 720, 778],
+    [277, 327, 382, 437, 494, 547, 603, 651, 695, 740],
+    [265, 321, 376, 433, 490, 546, 602, 653, 699, 745],
+    [255, 310, 368, 426, 485, 544, 600, 655, 704, 752],
+    [242, 299, 359, 419, 480, 542, 600, 658, 710, 759],
+    [227, 286, 349, 411, 474, 538, 602, 661, 715, 767],
+    [212, 275, 339, 403, 468, 535, 599, 662, 720, 776],
+    [197, 260, 325, 391, 461, 531, 600, 664, 723, 780],
+    [181, 248, 313, 382, 455, 528, 599, 668, 728, 787],
+    [161, 231, 300, 371, 447, 524, 601, 671, 734, 797],
+    [139, 213, 286, 360, 439, 520, 600, 674, 737, 806],
+    [117, 194, 272, 350, 433, 516, 601, 678, 745, 817],
+    [90, 174, 258, 339, 425, 513, 600, 682, 753, 829],
+    [203, 267, 328, 390, 458, 532, 599, 665, 721, 777],
+    [187, 253, 316, 382, 453, 529, 599, 667, 724, 784],
+    [166, 234, 302, 373, 445, 524, 598, 669, 729, 793],
+    [145, 217, 289, 364, 440, 520, 598, 671, 735, 803],
+    [123, 198, 276, 354, 434, 516, 599, 673, 741, 812],
+    [97, 180, 261, 343, 428, 513, 599, 676, 749, 825],
+    [209, 274, 334, 394, 459, 529, 600, 661, 715, 775],
+    [193, 260, 323, 386, 454, 526, 599, 662, 719, 779],
+    [173, 244, 310, 376, 449, 523, 598, 664, 725, 789],
+    [152, 227, 297, 367, 443, 520, 598, 666, 732, 799],
+    [130, 207, 283, 358, 437, 517, 597, 669, 738, 809],
+    [105, 186, 268, 348, 430, 514, 599, 672, 747, 821],
+    [216, 277, 343, 406, 469, 534, 598, 661, 716, 770],
+    [200, 264, 331, 396, 462, 530, 597, 662, 720, 777],
+    [181, 249, 318, 386, 455, 526, 596, 663, 725, 787],
+    [158, 232, 304, 375, 447, 522, 596, 664, 731, 795],
+    [136, 214, 289, 363, 439, 518, 594, 665, 736, 805],
+    [112, 193, 274, 353, 433, 515, 594, 666, 742, 816]
+  ];
+  var t = 400;
+  var lines = $.map(yOffsets, function (y, index) {
+    var $line = $("<div class='line' id=line" + index + "></div>");
+    $line.css('top', y);
+    return $line;
+  });
+  lines.forEach(function ($line) {
+    $('#box').append($line);
+  });
+
+  setTimeout(function () {
+    shape1(29, 0, 9, '#9EFFFF');
+  }, 0);
+  setTimeout(function () {
+    shape2(27, 0, 8, '#CFFF9E');
+  }, 10 * t);
+  setTimeout(function () {
+    shape3(37, 0, 8, '#B061FF');
+  }, 19 * t);
+  setTimeout(function () {
+    shape4(24, 0, 8, '#FFAB57');
+  }, 28 * t);
+  setTimeout(function () {
+    shape5(23, 0, 7, '#FF57FF');
+  }, 37 * t);
+  setTimeout(function () {
+    shape3(35, 0, 8, '#4DFF4D');
+  }, 45 * t);
+  setTimeout(function () {
+    $('.r-8').css('background', 'white');
+  }, 54 * t);
+  setTimeout(function () {
+    $('.r-8').remove();
+    $('.item').each(function () {
+      var $item = $(this);
+      var lineIndex = $item.data('line');
+      var pos = $item.data('pos');
+      $item.removeClass('r-' + pos).addClass('r-' + (pos + 1));
+      moveItem($item, lineIndex, pos, pos + 1);
+    })
+  }, 55 * t);
+  setTimeout(function () {
+    shape6(25, 0, 8, '#FFFF4D');
+  }, 56 * t);
+  setTimeout(function () {
+    shape7(30, 0, 8, '#99CCCC');
+  }, 65 * t);
+  setTimeout(function () {
+    shape8(29, 0, 8, '#C4A2E7');
+  }, 74 * t);
+  setTimeout(function () {
+    $('.r-8').css('background', 'white');
+  }, 83 * t);
+  setTimeout(function () {
+    $('.r-8').remove();
+    $('.item').each(function () {
+      var $item = $(this);
+      var lineIndex = $item.data('line');
+      var pos = $item.data('pos');
+      $item.removeClass('r-' + pos).addClass('r-' + (pos + 1));
+      moveItem($item, lineIndex, pos, pos + 1);
+    })
+  }, 84 * t);
+  setTimeout(function () {
+    shape9(39, 0, 6, '#FFCA7A');
+  }, 85 * t);
+  setTimeout(function () {
+    shape10(24, 0, 7, '#FF4DD2');
+  }, 92 * t);
+  setTimeout(function () {
+    shape11(31, 0, 7, '#D2FF4D');
+  }, 100 * t);
+  setTimeout(function () {
+    shape12(25, 0, 5, '#CCFFFF');
+  }, 108 * t);
+  setTimeout(function () {
+    shape1(35, 0, 6, '#FF99FF');
+  }, 114 * t);
+  setTimeout(function () {
+    shape8(24, 0, 5, '#D98CB3');
+  }, 121 * t);
+  setTimeout(function () {
+    shape13(33, 0, 5, '#00FF99');
+  }, 127 * t);
+  setTimeout(function () {
+    shape14(25, 0, 4, '#FF99CC');
+  }, 133 * t);
+  setTimeout(function () {
+    shape15(26, 0, 5, '#FF3300');
+  }, 138 * t);
+  setTimeout(function () {
+    shape2(27, 0, 3, '#9999FF');
+  }, 144 * t);
+  setTimeout(function () {
+    shape16(27, 0, 1, '#FF794D');
+  }, 148 * t);
+  setTimeout(function () {
+    $('.r-0').css('background', 'red');
+  }, 150 * t);
+  setTimeout(function () {
+    $('.r-0').css('background', 'black');
+  }, 150 * t + 300);
+  setTimeout(function () {
+    $('.r-0').css('background', 'red');
+  }, 150 * t + 600);
+  setTimeout(function () {
+    $('.r-0').css('background', 'black');
+  }, 150 * t + 900);
+  setTimeout(function () {
+    $('.r-0').css('background', 'red');
+  }, 150 * t + 1200);
+  setTimeout(function () {
+    $('.r-0').css('background', 'black');
+  }, 150 * t + 1500);
+  setTimeout(function () {
+    $('.r-0').css('background', 'red');
+  }, 150 * t + 1800);
+  setTimeout(function () {
+    $('.r-0').css('background', 'black');
+  }, 150 * t + 2100);
+  setTimeout(function () {
+    $('.r-0').css('background', 'red');
+  }, 150 * t + 2400);
+  setTimeout(function () {
+    $('.item').css('background', '#111');
+  }, 150 * t + 2700);
+
+
+  function shape1(i, start, steps, color) {
+    var params = [
+      {line: i, start: start, end: steps + start - 1},
+      {line: i + 1, start: start, end: steps + start - 1},
+      {line: i + 2, start: start, end: steps + start - 1},
+      {line: i + 3, start: start, end: steps + start - 1},
+      {line: i + 4, start: start, end: steps + start - 1},
+      {line: i + 6, start: start, end: steps + start - 1},
+      {line: i + 7, start: start, end: steps + start - 1},
+      {line: i + 8, start: start, end: steps + start - 1},
+      {line: i + 9, start: start, end: steps + start - 1},
+      {line: i + 10, start: start, end: steps + start - 1}
+    ];
+    params.forEach(function (param) {
+      var $item = $("<div class='item'></div>");
+      $item.css('background', color);
+      $item.appendTo(lines[param.line]);
+      moveItem($item, param.line, param.start, param.end);
+    });
+  }
+
+  function shape2(i, start, steps, color) {
+    var params = [
+      {line: i, start: start + 1, end: steps + start},
+      {line: i + 1, start: start + 1, end: steps + start},
+      {line: i + 6, start: start + 1, end: steps + start},
+      {line: i + 7, start: start + 1, end: steps + start},
+      {line: i + 12, start: start + 1, end: steps + start},
+      {line: i + 13, start: start + 1, end: steps + start},
+      {line: i + 18, start: start + 1, end: steps + start},
+      {line: i + 19, start: start + 1, end: steps + start},
+      {line: i + 6, start: start, end: steps + start - 1},
+      {line: i + 7, start: start, end: steps + start - 1},
+      {line: i + 12, start: start, end: steps + start - 1},
+      {line: i + 13, start: start, end: steps + start - 1}
+    ];
+    params.forEach(function (param) {
+      var $item = $("<div class='item'></div>");
+      $item.css('background', color);
+      $item.appendTo(lines[param.line]);
+      moveItem($item, param.line, param.start, param.end);
+    });
+  }
+
+  function shape3(i, start, steps, color) {
+    var params = [
+      {line: i, start: start + 1, end: steps + start},
+      {line: i + 1, start: start + 1, end: steps + start},
+      {line: i + 2, start: start + 1, end: steps + start},
+      {line: i + 6, start: start + 1, end: steps + start},
+      {line: i + 7, start: start + 1, end: steps + start},
+      {line: i + 8, start: start + 1, end: steps + start},
+      {line: i + 1, start: start, end: steps + start - 1},
+      {line: i + 2, start: start, end: steps + start - 1},
+      {line: i + 3, start: start, end: steps + start - 1},
+      {line: i + 7, start: start, end: steps + start - 1},
+      {line: i + 8, start: start, end: steps + start - 1},
+      {line: i + 9, start: start, end: steps + start - 1}
+    ];
+    params.forEach(function (param) {
+      var $item = $("<div class='item'></div>");
+      $item.css('background', color);
+      $item.appendTo(lines[param.line]);
+      moveItem($item, param.line, param.start, param.end);
+    });
+  }
+
+  function shape4(i, start, steps, color) {
+    var params = [
+      {line: i, start: start + 1, end: steps + start},
+      {line: i + 1, start: start + 1, end: steps + start},
+      {line: i + 2, start: start + 1, end: steps + start},
+      {line: i + 3, start: start + 1, end: steps + start},
+      {line: i + 6, start: start + 1, end: steps + start},
+      {line: i + 7, start: start + 1, end: steps + start},
+      {line: i + 8, start: start + 1, end: steps + start},
+      {line: i + 9, start: start + 1, end: steps + start},
+      {line: i, start: start, end: steps + start - 1},
+      {line: i + 1, start: start, end: steps + start - 1},
+      {line: i + 6, start: start, end: steps + start - 1},
+      {line: i + 7, start: start, end: steps + start - 1}
+    ];
+    params.forEach(function (param) {
+      var $item = $("<div class='item'></div>");
+      $item.css('background', color);
+      $item.appendTo(lines[param.line]);
+      moveItem($item, param.line, param.start, param.end);
+    });
+  }
+
+  function shape5(i, start, steps, color) {
+    var params = [
+      {line: i, start: start + 2, end: steps + start + 1},
+      {line: i + 1, start: start + 2, end: steps + start + 1},
+      {line: i + 6, start: start + 2, end: steps + start + 1},
+      {line: i + 7, start: start + 2, end: steps + start + 1},
+      {line: i, start: start + 1, end: steps + start},
+      {line: i + 1, start: start + 1, end: steps + start},
+      {line: i + 6, start: start + 1, end: steps + start},
+      {line: i + 7, start: start + 1, end: steps + start},
+      {line: i, start: start, end: steps + start - 1},
+      {line: i + 1, start: start, end: steps + start - 1},
+      {line: i + 2, start: start, end: steps + start - 1},
+      {line: i + 6, start: start, end: steps + start - 1},
+      {line: i + 7, start: start, end: steps + start - 1},
+      {line: i + 8, start: start, end: steps + start - 1}
+    ];
+    params.forEach(function (param) {
+      var $item = $("<div class='item'></div>");
+      $item.css('background', color);
+      $item.appendTo(lines[param.line]);
+      moveItem($item, param.line, param.start, param.end);
+    });
+  }
+
+  function shape6(i, start, steps, color) {
+    var params = [
+      {line: i, start: start + 1, end: steps + start},
+      {line: i + 1, start: start + 1, end: steps + start},
+      {line: i + 2, start: start + 1, end: steps + start},
+      {line: i + 3, start: start + 1, end: steps + start},
+      {line: i + 6, start: start + 1, end: steps + start},
+      {line: i + 7, start: start + 1, end: steps + start},
+      {line: i + 8, start: start + 1, end: steps + start},
+      {line: i + 9, start: start + 1, end: steps + start},
+      {line: i + 1, start: start, end: steps + start - 1},
+      {line: i + 2, start: start, end: steps + start - 1},
+      {line: i + 7, start: start, end: steps + start - 1},
+      {line: i + 8, start: start, end: steps + start - 1}
+    ];
+    params.forEach(function (param) {
+      var $item = $("<div class='item'></div>");
+      $item.css('background', color);
+      $item.appendTo(lines[param.line]);
+      moveItem($item, param.line, param.start, param.end);
+    });
+  }
+
+  function shape7(i, start, steps, color) {
+    var params = [
+      {line: i, start: start + 1, end: steps + start},
+      {line: i + 1, start: start + 1, end: steps + start},
+      {line: i + 2, start: start + 1, end: steps + start},
+      {line: i + 3, start: start + 1, end: steps + start},
+      {line: i + 6, start: start + 1, end: steps + start},
+      {line: i + 7, start: start + 1, end: steps + start},
+      {line: i + 8, start: start + 1, end: steps + start},
+      {line: i + 9, start: start + 1, end: steps + start},
+      {line: i + 2, start: start, end: steps + start - 1},
+      {line: i + 3, start: start, end: steps + start - 1},
+      {line: i + 8, start: start, end: steps + start - 1},
+      {line: i + 9, start: start, end: steps + start - 1}
+    ];
+    params.forEach(function (param) {
+      var $item = $("<div class='item'></div>");
+      $item.css('background', color);
+      $item.appendTo(lines[param.line]);
+      moveItem($item, param.line, param.start, param.end);
+    });
+  }
+
+  function shape8(i, start, steps, color) {
+    var params = [
+      {line: i, start: start + 1, end: steps + start},
+      {line: i + 1, start: start + 1, end: steps + start},
+      {line: i + 6, start: start + 1, end: steps + start},
+      {line: i + 7, start: start + 1, end: steps + start},
+      {line: i + 12, start: start + 1, end: steps + start},
+      {line: i + 13, start: start + 1, end: steps + start},
+      {line: i, start: start, end: steps + start - 1},
+      {line: i + 1, start: start, end: steps + start - 1},
+      {line: i + 6, start: start, end: steps + start - 1},
+      {line: i + 7, start: start, end: steps + start - 1},
+      {line: i + 12, start: start, end: steps + start - 1},
+      {line: i + 13, start: start, end: steps + start - 1}
+    ];
+    params.forEach(function (param) {
+      var $item = $("<div class='item'></div>");
+      $item.css('background', color);
+      $item.appendTo(lines[param.line]);
+      moveItem($item, param.line, param.start, param.end);
+    });
+  }
+
+  function shape9(i, start, steps, color) {
+    var params = [
+      {line: i, start: start + 3, end: steps + start + 2},
+      {line: i + 1, start: start + 3, end: steps + start + 2},
+      {line: i + 6, start: start + 3, end: steps + start + 2},
+      {line: i + 7, start: start + 3, end: steps + start + 2},
+      {line: i, start: start + 2, end: steps + start + 1},
+      {line: i + 1, start: start + 2, end: steps + start + 1},
+      {line: i + 6, start: start + 2, end: steps + start + 1},
+      {line: i + 7, start: start + 2, end: steps + start + 1},
+      {line: i, start: start + 1, end: steps + start},
+      {line: i + 1, start: start + 1, end: steps + start},
+      {line: i + 6, start: start + 1, end: steps + start},
+      {line: i + 7, start: start + 1, end: steps + start},
+      {line: i, start: start, end: steps + start - 1},
+      {line: i + 1, start: start, end: steps + start - 1},
+      {line: i + 6, start: start, end: steps + start - 1},
+      {line: i + 7, start: start, end: steps + start - 1}
+    ];
+    params.forEach(function (param) {
+      var $item = $("<div class='item'></div>");
+      $item.css('background', color);
+      $item.appendTo(lines[param.line]);
+      moveItem($item, param.line, param.start, param.end);
+    });
+  }
+
+  function shape10(i, start, steps, color) {
+    var params = [
+      {line: i + 6, start: start + 2, end: steps + start + 1},
+      {line: i + 7, start: start + 2, end: steps + start + 1},
+      {line: i + 12, start: start + 2, end: steps + start + 1},
+      {line: i + 13, start: start + 2, end: steps + start + 1},
+      {line: i, start: start + 1, end: steps + start},
+      {line: i + 1, start: start + 1, end: steps + start},
+      {line: i + 6, start: start + 1, end: steps + start},
+      {line: i + 7, start: start + 1, end: steps + start},
+      {line: i + 12, start: start + 1, end: steps + start},
+      {line: i + 13, start: start + 1, end: steps + start},
+      {line: i + 6, start: start, end: steps + start - 1},
+      {line: i + 7, start: start, end: steps + start - 1},
+      {line: i + 12, start: start, end: steps + start - 1},
+      {line: i + 13, start: start, end: steps + start - 1}
+    ];
+    params.forEach(function (param) {
+      var $item = $("<div class='item'></div>");
+      $item.css('background', color);
+      $item.appendTo(lines[param.line]);
+      moveItem($item, param.line, param.start, param.end);
+    });
+  }
+
+  function shape11(i, start, steps, color) {
+    var params = [
+      {line: i, start: start + 2, end: steps + start + 1},
+      {line: i + 1, start: start + 2, end: steps + start + 1},
+      {line: i + 6, start: start + 2, end: steps + start + 1},
+      {line: i + 7, start: start + 2, end: steps + start + 1},
+      {line: i, start: start + 1, end: steps + start},
+      {line: i + 1, start: start + 1, end: steps + start},
+      {line: i + 6, start: start + 1, end: steps + start},
+      {line: i + 7, start: start + 1, end: steps + start},
+      {line: i + 12, start: start + 1, end: steps + start},
+      {line: i + 13, start: start + 1, end: steps + start},
+      {line: i + 6, start: start, end: steps + start - 1},
+      {line: i + 7, start: start, end: steps + start - 1},
+      {line: i + 12, start: start, end: steps + start - 1},
+      {line: i + 13, start: start, end: steps + start - 1}
+    ];
+    params.forEach(function (param) {
+      var $item = $("<div class='item'></div>");
+      $item.css('background', color);
+      $item.appendTo(lines[param.line]);
+      moveItem($item, param.line, param.start, param.end);
+    });
+  }
+
+  function shape12(i, start, steps, color) {
+    var params = [
+      {line: i + 6, start: start + 2, end: steps + start + 1},
+      {line: i + 7, start: start + 2, end: steps + start + 1},
+      {line: i + 12, start: start + 2, end: steps + start + 1},
+      {line: i + 13, start: start + 2, end: steps + start + 1},
+      {line: i, start: start + 1, end: steps + start},
+      {line: i + 1, start: start + 1, end: steps + start},
+      {line: i + 6, start: start + 1, end: steps + start},
+      {line: i + 7, start: start + 1, end: steps + start},
+      {line: i + 12, start: start + 1, end: steps + start},
+      {line: i + 13, start: start + 1, end: steps + start},
+      {line: i, start: start, end: steps + start - 1},
+      {line: i + 1, start: start, end: steps + start - 1},
+      {line: i + 6, start: start, end: steps + start - 1},
+      {line: i + 7, start: start, end: steps + start - 1}
+    ];
+    params.forEach(function (param) {
+      var $item = $("<div class='item'></div>");
+      $item.css('background', color);
+      $item.appendTo(lines[param.line]);
+      moveItem($item, param.line, param.start, param.end);
+    });
+  }
+
+  function shape13(i, start, steps, color) {
+    var params = [
+      {line: i, start: start + 2, end: steps + start + 1},
+      {line: i + 1, start: start + 2, end: steps + start + 1},
+      {line: i + 6, start: start + 2, end: steps + start + 1},
+      {line: i + 7, start: start + 2, end: steps + start + 1},
+      {line: i, start: start + 1, end: steps + start},
+      {line: i + 1, start: start + 1, end: steps + start},
+      {line: i + 6, start: start + 1, end: steps + start},
+      {line: i + 7, start: start + 1, end: steps + start},
+      {line: i, start: start, end: steps + start - 1},
+      {line: i + 1, start: start, end: steps + start - 1},
+      {line: i + 6, start: start, end: steps + start - 1},
+      {line: i + 7, start: start, end: steps + start - 1},
+      {line: i + 12, start: start, end: steps + start - 1},
+      {line: i + 13, start: start, end: steps + start - 1}
+    ];
+    params.forEach(function (param) {
+      var $item = $("<div class='item'></div>");
+      $item.css('background', color);
+      $item.appendTo(lines[param.line]);
+      moveItem($item, param.line, param.start, param.end);
+    });
+  }
+
+  function shape14(i, start, steps, color) {
+    var params = [
+      {line: i + 6, start: start + 1, end: steps + start},
+      {line: i + 7, start: start + 1, end: steps + start},
+      {line: i + 12, start: start + 1, end: steps + start},
+      {line: i + 13, start: start + 1, end: steps + start},
+      {line: i + 18, start: start + 1, end: steps + start},
+      {line: i + 19, start: start + 1, end: steps + start},
+      {line: i, start: start, end: steps + start - 1},
+      {line: i + 1, start: start, end: steps + start - 1},
+      {line: i + 6, start: start, end: steps + start - 1},
+      {line: i + 7, start: start, end: steps + start - 1},
+      {line: i + 12, start: start, end: steps + start - 1},
+      {line: i + 13, start: start, end: steps + start - 1}
+    ];
+    params.forEach(function (param) {
+      var $item = $("<div class='item'></div>");
+      $item.css('background', color);
+      $item.appendTo(lines[param.line]);
+      moveItem($item, param.line, param.start, param.end);
+    });
+  }
+
+  function shape15(i, start, steps, color) {
+    var params = [
+      {line: i + 6, start: start + 1, end: steps + start},
+      {line: i + 7, start: start + 1, end: steps + start},
+      {line: i + 12, start: start + 1, end: steps + start},
+      {line: i + 13, start: start + 1, end: steps + start},
+      {line: i, start: start, end: steps + start - 1},
+      {line: i + 1, start: start, end: steps + start - 1},
+      {line: i + 6, start: start, end: steps + start - 1},
+      {line: i + 7, start: start, end: steps + start - 1},
+      {line: i + 12, start: start, end: steps + start - 1},
+      {line: i + 13, start: start, end: steps + start - 1},
+      {line: i + 18, start: start, end: steps + start - 1},
+      {line: i + 19, start: start, end: steps + start - 1}
+    ];
+    params.forEach(function (param) {
+      var $item = $("<div class='item'></div>");
+      $item.css('background', color);
+      $item.appendTo(lines[param.line]);
+      moveItem($item, param.line, param.start, param.end);
+    });
+  }
+
+  function shape16(i, start, steps, color) {
+    var params = [
+      {line: i, start: start + 1, end: steps + start},
+      {line: i + 1, start: start + 1, end: steps + start},
+      {line: i + 6, start: start + 1, end: steps + start},
+      {line: i + 7, start: start + 1, end: steps + start},
+      {line: i + 12, start: start + 1, end: steps + start},
+      {line: i + 13, start: start + 1, end: steps + start},
+      {line: i + 18, start: start + 1, end: steps + start},
+      {line: i + 19, start: start + 1, end: steps + start},
+      {line: i, start: start, end: steps + start - 1},
+      {line: i + 1, start: start, end: steps + start - 1},
+      {line: i + 6, start: start, end: steps + start - 1},
+      {line: i + 7, start: start, end: steps + start - 1}
+    ];
+    params.forEach(function (param) {
+      var $item = $("<div class='item'></div>");
+      $item.css('background', color);
+      $item.appendTo(lines[param.line]);
+      moveItem($item, param.line, param.start, param.end);
+    });
+  }
+
+  function moveItem($item, lineIndex, start, end) {
+    $item.addClass('r-' + end);
+    $item.data('line', lineIndex);
+    $item.data('pos', end);
+    move($item, start);
+    function move($item, step) {
+      var offset = xOffsets[lineIndex][step];
+      var width = xOffsets[lineIndex][step + 1] - xOffsets[lineIndex][step] + 1;
+      $item.css('left', offset).css('width', width);
+      if (step < end) {
+        setTimeout(function () {
+          move($item, step + 1)
+        }, t);
+      }
+    }
+  }
+</script>
+</body>
+</html>
