@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Lines</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background: black;
+    }
+
+    .line {
+      position: absolute;
+      height: 3px;
+    }
+
+    .item {
+      position: absolute;
+      top: 0;
+      height: 100%;
+    }
+
+  </style>
+</head>
+<body>
+<div id="box"></div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+<script>
+  var yOffsets = [36, 56, 74, 92, 110, 128, 143, 160, 177, 194, 210, 227, 242, 258, 275, 290, 306, 324, 338, 354, 369, 383, 398, 413, 426, 442, 457, 472, 488, 500, 513, 528, 542, 556, 571, 582, 595, 609, 623, 636, 648, 660, 672, 686, 698, 713, 726];
+  var xOffsets = [
+    [497, 574, 648, 719, 790, 864, 940, 1014, 1094, 1180],
+    [503, 577, 648, 716, 786, 858, 933, 1004, 1080, 1158],
+    [511, 580, 649, 715, 782, 852, 924, 993, 1065, 1134],
+    [519, 584, 649, 714, 778, 845, 915, 983, 1051, 1118],
+    [527, 587, 649, 712, 774, 839, 907, 973, 1039, 1103],
+    [535, 591, 649, 708, 769, 832, 898, 963, 1028, 1087],
+    [499, 568, 633, 713, 800, 876, 944, 1013, 1089, 1165],
+    [506, 574, 637, 714, 795, 869, 935, 1002, 1076, 1148],
+    [513, 579, 642, 712, 788, 860, 924, 990, 1061, 1132],
+    [521, 584, 647, 713, 782, 850, 913, 978, 1046, 1111],
+    [527, 588, 650, 714, 778, 842, 905, 968, 1031, 1096],
+    [533, 593, 652, 712, 773, 838, 898, 959, 1018, 1082],
+    [528, 588, 650, 711, 775, 841, 903, 966, 1027, 1093],
+    [521, 584, 648, 711, 778, 845, 911, 976, 1039, 1106],
+    [513, 579, 646, 710, 781, 849, 919, 985, 1052, 1121],
+    [509, 579, 646, 713, 786, 856, 928, 996, 1066, 1133],
+    [508, 577, 645, 714, 790, 861, 936, 1006, 1078, 1148],
+    [537, 592, 648, 712, 766, 829, 892, 953, 1015, 1072],
+    [528, 586, 646, 710, 767, 834, 898, 960, 1024, 1083],
+    [520, 583, 644, 709, 770, 840, 906, 970, 1035, 1097],
+    [515, 582, 643, 706, 773, 847, 914, 982, 1045, 1113],
+    [512, 579, 641, 708, 779, 854, 924, 993, 1058, 1127],
+    [511, 577, 641, 709, 784, 861, 934, 1006, 1074, 1143],
+    [507, 573, 640, 710, 790, 868, 943, 1018, 1090, 1163],
+    [496, 567, 639, 712, 794, 876, 954, 1033, 1107, 1186],
+    [485, 561, 637, 711, 799, 883, 946, 1047, 1126, 1207],
+    [471, 551, 632, 713, 802, 891, 976, 1063, 1148, 1235],
+    [457, 542, 626, 714, 805, 898, 986, 1078, 1171, 1264],
+    [445, 531, 619, 714, 807, 905, 998, 1098, 1197, 1297],
+    [511, 573, 640, 710, 785, 862, 929, 1002, 1080, 1155],
+    [502, 566, 637, 710, 788, 869, 939, 1017, 1097, 1173],
+    [488, 559, 633, 713, 791, 876, 952, 1034, 1144, 1194],
+    [475, 549, 629, 716, 796, 885, 965, 1053, 1139, 1223],
+    [464, 541, 626, 715, 800, 892, 979, 1071, 1160, 1250],
+    [453, 532, 622, 712, 804, 901, 999, 1095, 1187, 1281],
+    [513, 578, 643, 707, 779, 852, 930, 1000, 1074, 1143],
+    [505, 571, 639, 706, 784, 859, 940, 1015, 1091, 1164],
+    [492, 563, 637, 710, 790, 866, 952, 1029, 1109, 1185],
+    [481, 555, 633, 711, 797, 876, 965, 1045, 1130, 1214],
+    [470, 548, 630, 712, 802, 885, 977, 1062, 1152, 1241],
+    [457, 540, 627, 715, 806, 899, 993, 1085, 1178, 1273],
+    [520, 582, 646, 706, 780, 855, 927, 1000, 1068, 1135],
+    [510, 575, 642, 708, 786, 863, 940, 1015, 1086, 1155],
+    [497, 568, 639, 711, 789, 871, 952, 1031, 1104, 1179],
+    [485, 561, 635, 712, 795, 881, 965, 1048, 1124, 1203],
+    [470, 554, 632, 713, 800, 889, 976, 1065, 1145, 1229],
+    [459, 546, 630, 714, 803, 896, 988, 1080, 1168, 1258]
+  ];
+  var t = 500;
+  var lines = $.map(yOffsets, function (y, index) {
+    var $line = $("<div class='line' id=line" + index + "></div>");
+    $line.css('top', y);
+    return $line;
+  });
+  lines.forEach(function ($line) {
+    $('#box').append($line);
+  });
+  setTimeout(function () {
+    var color = 'yellow';
+    fireLine(39, color);
+    fireLine(40, color);
+    fireLine(45, color);
+    fireLine(46, color);
+  }, 0);
+
+  setTimeout(function () {
+    $('.line').empty();
+  }, 46 * t);
+
+  setTimeout(function () {
+    var color = '#65E94E';
+    fireLine(32, color);
+    fireLine(33, color);
+    fireLine(34, color);
+    fireLine(38, color);
+    fireLine(40, color);
+    fireLine(44, color);
+    fireLine(45, color);
+    fireLine(46, color);
+  }, 47 * t);
+
+  setTimeout(function () {
+    $('.line').empty();
+  }, 93 * t);
+
+  setTimeout(function () {
+    var color = '#DD7BEF';
+    fireLine(25, color);
+    fireLine(26, color);
+    fireLine(27, color);
+    fireLine(28, color);
+    fireLine(31, color);
+    fireLine(34, color);
+    fireLine(37, color);
+    fireLine(40, color);
+    fireLine(43, color);
+    fireLine(44, color);
+    fireLine(45, color);
+    fireLine(46, color);
+  }, 94 * t);
+
+  setTimeout(function () {
+    $('.line').empty();
+  }, 140 * t);
+
+  setTimeout(function () {
+    var color = '#EA8753';
+    fireLine(24, color);
+    fireLine(25, color);
+    fireLine(26, color);
+    fireLine(27, color);
+    fireLine(28, color);
+    fireLine(30, color);
+    fireLine(34, color);
+    fireLine(36, color);
+    fireLine(40, color);
+    fireLine(42, color);
+    fireLine(43, color);
+    fireLine(44, color);
+    fireLine(45, color);
+    fireLine(46, color);
+  }, 141 * t);
+
+  setTimeout(function () {
+    $('.line').empty();
+  }, 187 * t);
+
+  setTimeout(function () {
+    var color = '#49B1E9';
+    fireLine(23, color);
+    fireLine(24, color);
+    fireLine(25, color);
+    fireLine(26, color);
+    fireLine(27, color);
+    fireLine(28, color);
+    fireLine(29, color);
+    fireLine(34, color);
+    fireLine(35, color);
+    fireLine(40, color);
+    fireLine(41, color);
+    fireLine(42, color);
+    fireLine(43, color);
+    fireLine(44, color);
+    fireLine(45, color);
+    fireLine(46, color);
+  }, 188 * t);
+
+  setTimeout(function () {
+    $('.line').empty();
+  }, 234 * t);
+
+  setTimeout(function () {
+    var color = '#D1FF1A';
+    fireLine(0, color);
+    fireLine(1, color);
+    fireLine(6, color);
+    fireLine(7, color);
+    fireLine(15, color);
+    fireLine(16, color);
+    fireLine(21, color);
+    fireLine(22, color);
+  }, 235 * t);
+
+  setTimeout(function () {
+    $('.line').empty();
+  }, 281 * t);
+
+  setTimeout(function () {
+    var color = '#FF4D79';
+    fireLine(1, color);
+    fireLine(2, color);
+    fireLine(7, color);
+    fireLine(8, color);
+    fireLine(14, color);
+    fireLine(15, color);
+    fireLine(20, color);
+    fireLine(21, color);
+  }, 282 * t);
+
+  setTimeout(function () {
+    $('.line').empty();
+  }, 328 * t);
+
+  setTimeout(function () {
+    var color = '#66D9FF';
+    fireLine(2, color);
+    fireLine(3, color);
+    fireLine(8, color);
+    fireLine(9, color);
+    fireLine(13, color);
+    fireLine(14, color);
+    fireLine(19, color);
+    fireLine(20, color);
+  }, 329 * t);
+
+  setTimeout(function () {
+    $('.line').empty();
+  }, 375 * t);
+
+  setTimeout(function () {
+    var color = '#DFFF80';
+    fireLine(3, color);
+    fireLine(4, color);
+    fireLine(9, color);
+    fireLine(10, color);
+    fireLine(12, color);
+    fireLine(13, color);
+    fireLine(18, color);
+    fireLine(19, color);
+  }, 376 * t);
+
+  setTimeout(function () {
+    $('.line').empty();
+  }, 422 * t);
+
+  setTimeout(function () {
+    var color = '#B399FF';
+    fireLine(4, color);
+    fireLine(5, color);
+    fireLine(10, color);
+    fireLine(11, color);
+    fireLine(12, color);
+    fireLine(17, color);
+    fireLine(18, color);
+  }, 423 * t);
+
+  function fireLine(i, color) {
+    var $line = lines[i];
+    var $item = $line.find('.item').eq(0);
+    if (!$item.length) {
+      $item = $("<div class='item'></div>");
+      $line.append($item);
+    }
+    $item.css('background', color);
+    move($item, 0, 0);
+    function move($item, index, step) {
+      var offset = xOffsets[i][step];
+      var width = xOffsets[i][step + 1] - xOffsets[i][step] + 1;
+      $item.css('left', offset).css('width', width);
+      if (index < 8) {
+        if (index + step < 8) {
+          setTimeout(function () {
+            move($item, index, step + 1)
+          }, t);
+        } else {
+          $item = $line.find('.item').eq(index + 1);
+          if (!$item.length) {
+            $item = $("<div class='item'></div>");
+            $line.append($item);
+          }
+          $item.css('background', color);
+          setTimeout(function () {
+            move($item, index + 1, 0)
+          }, t);
+        }
+      }
+    }
+  }
+
+</script>
+</body>
+</html>
