@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Lines</title>
+  <title>点亮直线</title>
   <style>
     * {
       margin: 0;
@@ -22,6 +22,7 @@
       position: absolute;
       top: 0;
       height: 100%;
+      background: yellow;
     }
 
   </style>
@@ -81,182 +82,39 @@
     [459, 546, 630, 714, 803, 896, 988, 1080, 1168, 1258]
   ];
   var t = 500;
-  var lines = $.map(yOffsets, function (y, index) {
-    var $line = $("<div class='line' id=line" + index + "></div>");
+  var lines = yOffsets.map(function (y, index) {
+    var $line = $("<div class='line' id=line" + (index + 1) + "></div>");
     $line.css('top', y);
     return $line;
   });
   lines.forEach(function ($line) {
     $('#box').append($line);
   });
-  setTimeout(function () {
-    var color = 'yellow';
-    fireLine(39, color);
-    fireLine(40, color);
-    fireLine(45, color);
-    fireLine(46, color);
-  }, 0);
+
+  lines.forEach(function ($line, i) {
+    fireLine(i, 'yellow');
+  });
 
   setTimeout(function () {
-    $('.line').empty();
-  }, 46 * t);
-
-  setTimeout(function () {
-    var color = '#65E94E';
-    fireLine(32, color);
-    fireLine(33, color);
-    fireLine(34, color);
-    fireLine(38, color);
-    fireLine(40, color);
-    fireLine(44, color);
-    fireLine(45, color);
-    fireLine(46, color);
+    $('.item').css('background', 'black');
   }, 47 * t);
-
   setTimeout(function () {
-    $('.line').empty();
-  }, 93 * t);
-
+    $('.item').css('background', '#33FFCC');
+  }, 48 * t);
   setTimeout(function () {
-    var color = '#DD7BEF';
-    fireLine(25, color);
-    fireLine(26, color);
-    fireLine(27, color);
-    fireLine(28, color);
-    fireLine(31, color);
-    fireLine(34, color);
-    fireLine(37, color);
-    fireLine(40, color);
-    fireLine(43, color);
-    fireLine(44, color);
-    fireLine(45, color);
-    fireLine(46, color);
-  }, 94 * t);
-
-  setTimeout(function () {
-    $('.line').empty();
-  }, 140 * t);
-
-  setTimeout(function () {
-    var color = '#EA8753';
-    fireLine(24, color);
-    fireLine(25, color);
-    fireLine(26, color);
-    fireLine(27, color);
-    fireLine(28, color);
-    fireLine(30, color);
-    fireLine(34, color);
-    fireLine(36, color);
-    fireLine(40, color);
-    fireLine(42, color);
-    fireLine(43, color);
-    fireLine(44, color);
-    fireLine(45, color);
-    fireLine(46, color);
-  }, 141 * t);
-
-  setTimeout(function () {
-    $('.line').empty();
-  }, 187 * t);
-
-  setTimeout(function () {
-    var color = '#49B1E9';
-    fireLine(23, color);
-    fireLine(24, color);
-    fireLine(25, color);
-    fireLine(26, color);
-    fireLine(27, color);
-    fireLine(28, color);
-    fireLine(29, color);
-    fireLine(34, color);
-    fireLine(35, color);
-    fireLine(40, color);
-    fireLine(41, color);
-    fireLine(42, color);
-    fireLine(43, color);
-    fireLine(44, color);
-    fireLine(45, color);
-    fireLine(46, color);
-  }, 188 * t);
-
-  setTimeout(function () {
-    $('.line').empty();
-  }, 234 * t);
-
-  setTimeout(function () {
-    var color = '#D1FF1A';
-    fireLine(0, color);
-    fireLine(1, color);
-    fireLine(6, color);
-    fireLine(7, color);
-    fireLine(15, color);
-    fireLine(16, color);
-    fireLine(21, color);
-    fireLine(22, color);
-  }, 235 * t);
-
-  setTimeout(function () {
-    $('.line').empty();
-  }, 281 * t);
-
-  setTimeout(function () {
-    var color = '#FF4D79';
-    fireLine(1, color);
-    fireLine(2, color);
-    fireLine(7, color);
-    fireLine(8, color);
-    fireLine(14, color);
-    fireLine(15, color);
-    fireLine(20, color);
-    fireLine(21, color);
-  }, 282 * t);
-
-  setTimeout(function () {
-    $('.line').empty();
-  }, 328 * t);
-
-  setTimeout(function () {
-    var color = '#66D9FF';
-    fireLine(2, color);
-    fireLine(3, color);
-    fireLine(8, color);
-    fireLine(9, color);
-    fireLine(13, color);
-    fireLine(14, color);
-    fireLine(19, color);
-    fireLine(20, color);
-  }, 329 * t);
-
-  setTimeout(function () {
-    $('.line').empty();
-  }, 375 * t);
-
-  setTimeout(function () {
-    var color = '#DFFF80';
-    fireLine(3, color);
-    fireLine(4, color);
-    fireLine(9, color);
-    fireLine(10, color);
-    fireLine(12, color);
-    fireLine(13, color);
-    fireLine(18, color);
-    fireLine(19, color);
-  }, 376 * t);
-
-  setTimeout(function () {
-    $('.line').empty();
-  }, 422 * t);
-
-  setTimeout(function () {
-    var color = '#B399FF';
-    fireLine(4, color);
-    fireLine(5, color);
-    fireLine(10, color);
-    fireLine(11, color);
-    fireLine(12, color);
-    fireLine(17, color);
-    fireLine(18, color);
-  }, 423 * t);
+    lines.forEach(function ($line) {
+      off(0);
+      function off(index) {
+        $line.find('.item').eq(index).css('background', 'black');
+        $line.find('.item').eq(8 - index).css('background', 'black');
+        if (index < 4) {
+          setTimeout(function () {
+            off(index + 1);
+          }, t);
+        }
+      }
+    });
+  }, 50 * t);
 
   function fireLine(i, color) {
     var $line = lines[i];
@@ -290,7 +148,6 @@
       }
     }
   }
-
 </script>
 </body>
 </html>

@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Lines</title>
+  <title>检测直线</title>
   <style>
     * {
       margin: 0;
@@ -16,15 +16,8 @@
     .line {
       position: absolute;
       height: 3px;
+      transition: background .3s ease;
     }
-
-    .item {
-      position: absolute;
-      top: 0;
-      height: 100%;
-      background: yellow;
-    }
-
   </style>
 </head>
 <body>
@@ -81,7 +74,7 @@
     [470, 554, 632, 713, 800, 889, 976, 1065, 1145, 1229],
     [459, 546, 630, 714, 803, 896, 988, 1080, 1168, 1258]
   ];
-  var t = 500;
+  var t = 3000;
   var lines = yOffsets.map(function (y, index) {
     var $line = $("<div class='line' id=line" + (index + 1) + "></div>");
     $line.css('top', y);
@@ -92,61 +85,19 @@
   });
 
   lines.forEach(function ($line, i) {
-    fireLine(i, 'yellow');
+    setTimeout(function () {
+      blinkLine(i, 'yellow');
+    }, i * t);
   });
 
-  setTimeout(function () {
-    $('.item').css('background', 'black');
-  }, 47 * t);
-  setTimeout(function () {
-    $('.item').css('background', '#33FFCC');
-  }, 48 * t);
-  setTimeout(function () {
-    lines.forEach(function ($line) {
-      off(0);
-      function off(index) {
-        $line.find('.item').eq(index).css('background', 'black');
-        $line.find('.item').eq(8 - index).css('background', 'black');
-        if (index < 4) {
-          setTimeout(function () {
-            off(index + 1);
-          }, t);
-        }
-      }
-    });
-  }, 50 * t);
-
-  function fireLine(i, color) {
+  function blinkLine(i, color) {
     var $line = lines[i];
-    var $item = $line.find('.item').eq(0);
-    if (!$item.length) {
-      $item = $("<div class='item'></div>");
-      $line.append($item);
-    }
-    $item.css('background', color);
-    move($item, 0, 0);
-    function move($item, index, step) {
-      var offset = xOffsets[i][step];
-      var width = xOffsets[i][step + 1] - xOffsets[i][step] + 1;
-      $item.css('left', offset).css('width', width);
-      if (index < 8) {
-        if (index + step < 8) {
-          setTimeout(function () {
-            move($item, index, step + 1)
-          }, t);
-        } else {
-          $item = $line.find('.item').eq(index + 1);
-          if (!$item.length) {
-            $item = $("<div class='item'></div>");
-            $line.append($item);
-          }
-          $item.css('background', color);
-          setTimeout(function () {
-            move($item, index + 1, 0)
-          }, t);
-        }
-      }
-    }
+    $line.css('background', color);
+    $line.css('left', xOffsets[i][0]);
+    $line.css('width', xOffsets[i][9] - xOffsets[i][0]);
+    setTimeout(function () {
+      $line.css('background', 'black');
+    }, t)
   }
 </script>
 </body>

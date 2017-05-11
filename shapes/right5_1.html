@@ -1,0 +1,1062 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>动图隐藏</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background: black;
+    }
+
+    .line {
+      position: absolute;
+      height: 3px;
+    }
+
+    .item {
+      position: absolute;
+      top: 0;
+      height: 100%;
+      display: none;
+    }
+
+  </style>
+</head>
+<body>
+<div id="box"></div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/velocity/1.5.0/velocity.min.js"></script>
+<script>
+  var yOffsets = [39, 54, 70, 86, 100, 118, 134, 148, 163, 178, 192, 207, 222, 237, 253, 267, 282, 295, 307, 323, 337, 352, 365, 379, 392, 407, 421, 436, 449, 457, 470, 484, 496, 510, 523, 532, 544, 557, 569, 582, 595, 603, 614, 626, 639, 651, 663];
+  var xOffsets = [
+    [192, 276, 347, 414, 477, 540, 601, 661, 724, 789],
+    [208, 285, 353, 419, 481, 542, 603, 659, 719, 783],
+    [224, 295, 360, 424, 484, 544, 603, 657, 713, 771],
+    [240, 305, 367, 430, 488, 546, 603, 655, 708, 761],
+    [253, 314, 374, 434, 491, 548, 603, 654, 704, 753],
+    [265, 322, 382, 440, 495, 550, 604, 652, 700, 746],
+    [198, 270, 342, 409, 475, 540, 602, 666, 724, 786],
+    [214, 281, 349, 413, 478, 541, 602, 662, 718, 777],
+    [229, 293, 356, 419, 481, 542, 602, 659, 712, 767],
+    [246, 302, 363, 424, 484, 543, 602, 655, 705, 757],
+    [257, 312, 371, 428, 487, 545, 603, 652, 700, 748],
+    [270, 321, 378, 432, 489, 545, 601, 650, 697, 742],
+    [260, 314, 371, 428, 486, 543, 601, 652, 701, 745],
+    [250, 305, 363, 423, 482, 542, 601, 654, 705, 755],
+    [237, 295, 356, 417, 478, 540, 601, 656, 709, 763],
+    [222, 284, 347, 410, 474, 538, 601, 658, 715, 771],
+    [206, 272, 338, 402, 469, 534, 600, 661, 720, 778],
+    [277, 327, 382, 437, 494, 547, 603, 651, 695, 740],
+    [265, 321, 376, 433, 490, 546, 602, 653, 699, 745],
+    [255, 310, 368, 426, 485, 544, 600, 655, 704, 752],
+    [242, 299, 359, 419, 480, 542, 600, 658, 710, 759],
+    [227, 286, 349, 411, 474, 538, 602, 661, 715, 767],
+    [212, 275, 339, 403, 468, 535, 599, 662, 720, 776],
+    [197, 260, 325, 391, 461, 531, 600, 664, 723, 780],
+    [181, 248, 313, 382, 455, 528, 599, 668, 728, 787],
+    [161, 231, 300, 371, 447, 524, 601, 671, 734, 797],
+    [139, 213, 286, 360, 439, 520, 600, 674, 737, 806],
+    [117, 194, 272, 350, 433, 516, 601, 678, 745, 817],
+    [90, 174, 258, 339, 425, 513, 600, 682, 753, 829],
+    [203, 267, 328, 390, 458, 532, 599, 665, 721, 777],
+    [187, 253, 316, 382, 453, 529, 599, 667, 724, 784],
+    [166, 234, 302, 373, 445, 524, 598, 669, 729, 793],
+    [145, 217, 289, 364, 440, 520, 598, 671, 735, 803],
+    [123, 198, 276, 354, 434, 516, 599, 673, 741, 812],
+    [97, 180, 261, 343, 428, 513, 599, 676, 749, 825],
+    [209, 274, 334, 394, 459, 529, 600, 661, 715, 775],
+    [193, 260, 323, 386, 454, 526, 599, 662, 719, 779],
+    [173, 244, 310, 376, 449, 523, 598, 664, 725, 789],
+    [152, 227, 297, 367, 443, 520, 598, 666, 732, 799],
+    [130, 207, 283, 358, 437, 517, 597, 669, 738, 809],
+    [105, 186, 268, 348, 430, 514, 599, 672, 747, 821],
+    [216, 277, 343, 406, 469, 534, 598, 661, 716, 770],
+    [200, 264, 331, 396, 462, 530, 597, 662, 720, 777],
+    [181, 249, 318, 386, 455, 526, 596, 663, 725, 787],
+    [158, 232, 304, 375, 447, 522, 596, 664, 731, 795],
+    [136, 214, 289, 363, 439, 518, 594, 665, 736, 805],
+    [112, 193, 274, 353, 433, 515, 594, 666, 742, 816]
+  ];
+  var lines = $.map(yOffsets, function (y, index) {
+    var $line = $("<div class='line' id=line" + index + "></div>");
+    $line.css('top', y);
+    return $line;
+  });
+  lines.forEach(function ($line) {
+    $('#box').append($line);
+  });
+
+  setTimeout(function () {
+    $('.line').empty();
+    textN();
+    $('.item').fadeIn(500);
+  }, 0);
+  setTimeout(function () {
+    $('.item').fadeOut(500);
+  }, 2000);
+  setTimeout(function () {
+    $('.line').empty();
+    textJ();
+    $('.item').fadeIn(500);
+  }, 2500);
+  setTimeout(function () {
+    $('.item').fadeOut(500);
+  }, 4500);
+  setTimeout(function () {
+    $('.line').empty();
+    textU();
+    $('.item').fadeIn(500);
+  }, 5000);
+  setTimeout(function () {
+    $('.item').fadeOut(500);
+  }, 7000);
+  setTimeout(function () {
+    $('.line').empty();
+    textE();
+    $('.item').fadeIn(500);
+  }, 7500);
+  setTimeout(function () {
+    $('.item').fadeOut(500);
+  }, 9500);
+  setTimeout(function () {
+    $('.line').empty();
+    textS();
+    $('.item').fadeIn(500);
+  }, 10000);
+  setTimeout(function () {
+    $('.item').fadeOut(500);
+  }, 12000);
+  setTimeout(function () {
+    $('.line').empty();
+    textE();
+    $('.item').fadeIn(500);
+  }, 12500);
+  setTimeout(function () {
+    $('.item').fadeOut(500);
+  }, 14500);
+  setTimeout(function () {
+    $('.line').empty();
+    textL();
+    $('.item').fadeIn(500);
+  }, 15000);
+  setTimeout(function () {
+    $('.item').fadeOut(500);
+  }, 17000);
+  setTimeout(function () {
+    $('.line').empty();
+    textA();
+    $('.item').fadeIn(500);
+  }, 17500);
+  setTimeout(function () {
+    $('.item').fadeOut(500);
+  }, 19500);
+  setTimeout(function () {
+    $('.line').empty();
+    textB();
+    $('.item').fadeIn(500);
+  }, 20000);
+  setTimeout(function () {
+    $('.item').fadeOut(500);
+  }, 22000);
+  setTimeout(function () {
+    $('.line').empty();
+    text3();
+    $('.item').fadeIn(500);
+  }, 22500);
+  setTimeout(function () {
+    $('.item').fadeOut(500);
+  }, 24500);
+  setTimeout(function () {
+    $('.line').empty();
+    text0();
+    $('.item').fadeIn(500);
+  }, 25000);
+  setTimeout(function () {
+    $('.item').fadeOut(500);
+  }, 27000);
+  setTimeout(function () {
+    $('.line').empty();
+    text7();
+    $('.item').fadeIn(500);
+  }, 27500);
+  setTimeout(function () {
+    $('.item').fadeOut(500);
+  }, 29500);
+
+  function textN() {
+    lines.forEach(function ($line, index) {
+      switch (index) {
+        case 28:
+        case 34:
+        case 40:
+        case 46:
+          [2, 3, 4, 5, 6, 7].forEach(function (i) {
+            var $item = $("<div class='item'></div>");
+            var offset = xOffsets[index][i];
+            var width = xOffsets[index][i + 1] - xOffsets[index][i] + 1;
+            $item.css('left', offset).css('width', width).css('background', 'yellow');
+            $line.append($item);
+          });
+          break;
+        case 27:
+        case 33:
+        case 39:
+        case 45:
+          [3].forEach(function (i) {
+            var $item = $("<div class='item'></div>");
+            var offset = xOffsets[index][i];
+            var width = xOffsets[index][i + 1] - xOffsets[index][i] + 1;
+            $item.css('left', offset).css('width', width).css('background', 'yellow');
+            $line.append($item);
+          });
+          break;
+        case 26:
+        case 32:
+        case 38:
+        case 44:
+          [4].forEach(function (i) {
+            var $item = $("<div class='item'></div>");
+            var offset = xOffsets[index][i];
+            var width = xOffsets[index][i + 1] - xOffsets[index][i] + 1;
+            $item.css('left', offset).css('width', width).css('background', 'yellow');
+            $line.append($item);
+          });
+          break;
+        case 25:
+        case 31:
+        case 37:
+        case 43:
+          [5].forEach(function (i) {
+            var $item = $("<div class='item'></div>");
+            var offset = xOffsets[index][i];
+            var width = xOffsets[index][i + 1] - xOffsets[index][i] + 1;
+            $item.css('left', offset).css('width', width).css('background', 'yellow');
+            $line.append($item);
+          });
+          break;
+        case 24:
+        case 30:
+        case 36:
+        case 42:
+          [6].forEach(function (i) {
+            var $item = $("<div class='item'></div>");
+            var offset = xOffsets[index][i];
+            var width = xOffsets[index][i + 1] - xOffsets[index][i] + 1;
+            $item.css('left', offset).css('width', width).css('background', 'yellow');
+            $line.append($item);
+          });
+          break;
+        case 23:
+        case 29:
+        case 35:
+        case 41:
+          [2, 3, 4, 5, 6, 7].forEach(function (i) {
+            var $item = $("<div class='item'></div>");
+            var offset = xOffsets[index][i];
+            var width = xOffsets[index][i + 1] - xOffsets[index][i] + 1;
+            $item.css('left', offset).css('width', width).css('background', 'yellow');
+            $line.append($item);
+          });
+          break;
+      }
+    });
+  }
+
+  function textJ() {
+    lines.forEach(function ($line, index) {
+      switch (index) {
+        case 28:
+        case 34:
+        case 40:
+        case 46:
+          [6].forEach(function (i) {
+            var $item = $("<div class='item'></div>");
+            var offset = xOffsets[index][i];
+            var width = xOffsets[index][i + 1] - xOffsets[index][i] + 1;
+            $item.css('left', offset).css('width', width).css('background', 'yellow');
+            $line.append($item);
+          });
+          break;
+        case 27:
+        case 33:
+        case 39:
+        case 45:
+          [7].forEach(function (i) {
+            var $item = $("<div class='item'></div>");
+            var offset = xOffsets[index][i];
+            var width = xOffsets[index][i + 1] - xOffsets[index][i] + 1;
+            $item.css('left', offset).css('width', width).css('background', 'yellow');
+            $line.append($item);
+          });
+          break;
+        case 26:
+        case 32:
+        case 38:
+        case 44:
+          [7].forEach(function (i) {
+            var $item = $("<div class='item'></div>");
+            var offset = xOffsets[index][i];
+            var width = xOffsets[index][i + 1] - xOffsets[index][i] + 1;
+            $item.css('left', offset).css('width', width).css('background', 'yellow');
+            $line.append($item);
+          });
+          break;
+        case 25:
+        case 31:
+        case 37:
+        case 43:
+          [2, 7].forEach(function (i) {
+            var $item = $("<div class='item'></div>");
+            var offset = xOffsets[index][i];
+            var width = xOffsets[index][i + 1] - xOffsets[index][i] + 1;
+            $item.css('left', offset).css('width', width).css('background', 'yellow');
+            $line.append($item);
+          });
+          break;
+        case 24:
+        case 30:
+        case 36:
+        case 42:
+          [2, 3, 4, 5, 6].forEach(function (i) {
+            var $item = $("<div class='item'></div>");
+            var offset = xOffsets[index][i];
+            var width = xOffsets[index][i + 1] - xOffsets[index][i] + 1;
+            $item.css('left', offset).css('width', width).css('background', 'yellow');
+            $line.append($item);
+          });
+          break;
+        case 23:
+        case 29:
+        case 35:
+        case 41:
+          [2].forEach(function (i) {
+            var $item = $("<div class='item'></div>");
+            var offset = xOffsets[index][i];
+            var width = xOffsets[index][i + 1] - xOffsets[index][i] + 1;
+            $item.css('left', offset).css('width', width).css('background', 'yellow');
+            $line.append($item);
+          });
+          break;
+      }
+    });
+  }
+
+  function textU() {
+    lines.forEach(function ($line, index) {
+      switch (index) {
+        case 28:
+        case 34:
+        case 40:
+        case 46:
+          [2, 3, 4, 5, 6].forEach(function (i) {
+            var $item = $("<div class='item'></div>");
+            var offset = xOffsets[index][i];
+            var width = xOffsets[index][i + 1] - xOffsets[index][i] + 1;
+            $item.css('left', offset).css('width', width).css('background', 'yellow');
+            $line.append($item);
+          });
+          break;
+        case 27:
+        case 33:
+        case 39:
+        case 45:
+          [7].forEach(function (i) {
+            var $item = $("<div class='item'></div>");
+            var offset = xOffsets[index][i];
+            var width = xOffsets[index][i + 1] - xOffsets[index][i] + 1;
+            $item.css('left', offset).css('width', width).css('background', 'yellow');
+            $line.append($item);
+          });
+          break;
+        case 26:
+        case 32:
+        case 38:
+        case 44:
+          [7].forEach(function (i) {
+            var $item = $("<div class='item'></div>");
+            var offset = xOffsets[index][i];
+            var width = xOffsets[index][i + 1] - xOffsets[index][i] + 1;
+            $item.css('left', offset).css('width', width).css('background', 'yellow');
+            $line.append($item);
+          });
+          break;
+        case 25:
+        case 31:
+        case 37:
+        case 43:
+          [7].forEach(function (i) {
+            var $item = $("<div class='item'></div>");
+            var offset = xOffsets[index][i];
+            var width = xOffsets[index][i + 1] - xOffsets[index][i] + 1;
+            $item.css('left', offset).css('width', width).css('background', 'yellow');
+            $line.append($item);
+          });
+          break;
+        case 24:
+        case 30:
+        case 36:
+        case 42:
+          [7].forEach(function (i) {
+            var $item = $("<div class='item'></div>");
+            var offset = xOffsets[index][i];
+            var width = xOffsets[index][i + 1] - xOffsets[index][i] + 1;
+            $item.css('left', offset).css('width', width).css('background', 'yellow');
+            $line.append($item);
+          });
+          break;
+        case 23:
+        case 29:
+        case 35:
+        case 41:
+          [2, 3, 4, 5, 6].forEach(function (i) {
+            var $item = $("<div class='item'></div>");
+            var offset = xOffsets[index][i];
+            var width = xOffsets[index][i + 1] - xOffsets[index][i] + 1;
+            $item.css('left', offset).css('width', width).css('background', 'yellow');
+            $line.append($item);
+          });
+          break;
+      }
+    });
+  }
+
+  function textE() {
+    lines.forEach(function ($line, index) {
+      switch (index) {
+        case 28:
+        case 34:
+        case 40:
+        case 46:
+          [2, 3, 4, 5, 6, 7, 8].forEach(function (i) {
+            var $item = $("<div class='item'></div>");
+            var offset = xOffsets[index][i];
+            var width = xOffsets[index][i + 1] - xOffsets[index][i] + 1;
+            $item.css('left', offset).css('width', width).css('background', 'yellow');
+            $line.append($item);
+          });
+          break;
+        case 27:
+        case 33:
+        case 39:
+        case 45:
+          [2, 5, 8].forEach(function (i) {
+            var $item = $("<div class='item'></div>");
+            var offset = xOffsets[index][i];
+            var width = xOffsets[index][i + 1] - xOffsets[index][i] + 1;
+            $item.css('left', offset).css('width', width).css('background', 'yellow');
+            $line.append($item);
+          });
+          break;
+        case 26:
+        case 32:
+        case 38:
+        case 44:
+          [2, 5, 8].forEach(function (i) {
+            var $item = $("<div class='item'></div>");
+            var offset = xOffsets[index][i];
+            var width = xOffsets[index][i + 1] - xOffsets[index][i] + 1;
+            $item.css('left', offset).css('width', width).css('background', 'yellow');
+            $line.append($item);
+          });
+          break;
+        case 25:
+        case 31:
+        case 37:
+        case 43:
+          [2, 5, 8].forEach(function (i) {
+            var $item = $("<div class='item'></div>");
+            var offset = xOffsets[index][i];
+            var width = xOffsets[index][i + 1] - xOffsets[index][i] + 1;
+            $item.css('left', offset).css('width', width).css('background', 'yellow');
+            $line.append($item);
+          });
+          break;
+        case 24:
+        case 30:
+        case 36:
+        case 42:
+          [2, 5, 8].forEach(function (i) {
+            var $item = $("<div class='item'></div>");
+            var offset = xOffsets[index][i];
+            var width = xOffsets[index][i + 1] - xOffsets[index][i] + 1;
+            $item.css('left', offset).css('width', width).css('background', 'yellow');
+            $line.append($item);
+          });
+          break;
+        case 23:
+        case 29:
+        case 35:
+        case 41:
+          [2, 5, 8].forEach(function (i) {
+            var $item = $("<div class='item'></div>");
+            var offset = xOffsets[index][i];
+            var width = xOffsets[index][i + 1] - xOffsets[index][i] + 1;
+            $item.css('left', offset).css('width', width).css('background', 'yellow');
+            $line.append($item);
+          });
+          break;
+      }
+    });
+  }
+
+  function textS() {
+    lines.forEach(function ($line, index) {
+      switch (index) {
+        case 28:
+        case 34:
+        case 40:
+        case 46:
+          [4, 7].forEach(function (i) {
+            var $item = $("<div class='item'></div>");
+            var offset = xOffsets[index][i];
+            var width = xOffsets[index][i + 1] - xOffsets[index][i] + 1;
+            $item.css('left', offset).css('width', width).css('background', 'yellow');
+            $line.append($item);
+          });
+          break;
+        case 27:
+        case 33:
+        case 39:
+        case 45:
+          [3, 5, 8].forEach(function (i) {
+            var $item = $("<div class='item'></div>");
+            var offset = xOffsets[index][i];
+            var width = xOffsets[index][i + 1] - xOffsets[index][i] + 1;
+            $item.css('left', offset).css('width', width).css('background', 'yellow');
+            $line.append($item);
+          });
+          break;
+        case 26:
+        case 32:
+        case 38:
+        case 44:
+          [2, 5, 8].forEach(function (i) {
+            var $item = $("<div class='item'></div>");
+            var offset = xOffsets[index][i];
+            var width = xOffsets[index][i + 1] - xOffsets[index][i] + 1;
+            $item.css('left', offset).css('width', width).css('background', 'yellow');
+            $line.append($item);
+          });
+          break;
+        case 25:
+        case 31:
+        case 37:
+        case 43:
+          [2, 5, 8].forEach(function (i) {
+            var $item = $("<div class='item'></div>");
+            var offset = xOffsets[index][i];
+            var width = xOffsets[index][i + 1] - xOffsets[index][i] + 1;
+            $item.css('left', offset).css('width', width).css('background', 'yellow');
+            $line.append($item);
+          });
+          break;
+        case 24:
+        case 30:
+        case 36:
+        case 42:
+          [2, 5, 7].forEach(function (i) {
+            var $item = $("<div class='item'></div>");
+            var offset = xOffsets[index][i];
+            var width = xOffsets[index][i + 1] - xOffsets[index][i] + 1;
+            $item.css('left', offset).css('width', width).css('background', 'yellow');
+            $line.append($item);
+          });
+          break;
+        case 23:
+        case 29:
+        case 35:
+        case 41:
+          [3, 6].forEach(function (i) {
+            var $item = $("<div class='item'></div>");
+            var offset = xOffsets[index][i];
+            var width = xOffsets[index][i + 1] - xOffsets[index][i] + 1;
+            $item.css('left', offset).css('width', width).css('background', 'yellow');
+            $line.append($item);
+          });
+          break;
+      }
+    });
+  }
+
+  function textL() {
+    lines.forEach(function ($line, index) {
+      switch (index) {
+        case 28:
+        case 34:
+        case 40:
+        case 46:
+          [2, 3, 4, 5, 6, 7, 8].forEach(function (i) {
+            var $item = $("<div class='item'></div>");
+            var offset = xOffsets[index][i];
+            var width = xOffsets[index][i + 1] - xOffsets[index][i] + 1;
+            $item.css('left', offset).css('width', width).css('background', 'yellow');
+            $line.append($item);
+          });
+          break;
+        case 27:
+        case 33:
+        case 39:
+        case 45:
+          [8].forEach(function (i) {
+            var $item = $("<div class='item'></div>");
+            var offset = xOffsets[index][i];
+            var width = xOffsets[index][i + 1] - xOffsets[index][i] + 1;
+            $item.css('left', offset).css('width', width).css('background', 'yellow');
+            $line.append($item);
+          });
+          break;
+        case 26:
+        case 32:
+        case 38:
+        case 44:
+          [8].forEach(function (i) {
+            var $item = $("<div class='item'></div>");
+            var offset = xOffsets[index][i];
+            var width = xOffsets[index][i + 1] - xOffsets[index][i] + 1;
+            $item.css('left', offset).css('width', width).css('background', 'yellow');
+            $line.append($item);
+          });
+          break;
+        case 25:
+        case 31:
+        case 37:
+        case 43:
+          [8].forEach(function (i) {
+            var $item = $("<div class='item'></div>");
+            var offset = xOffsets[index][i];
+            var width = xOffsets[index][i + 1] - xOffsets[index][i] + 1;
+            $item.css('left', offset).css('width', width).css('background', 'yellow');
+            $line.append($item);
+          });
+          break;
+        case 24:
+        case 30:
+        case 36:
+        case 42:
+          [8].forEach(function (i) {
+            var $item = $("<div class='item'></div>");
+            var offset = xOffsets[index][i];
+            var width = xOffsets[index][i + 1] - xOffsets[index][i] + 1;
+            $item.css('left', offset).css('width', width).css('background', 'yellow');
+            $line.append($item);
+          });
+          break;
+        case 23:
+        case 29:
+        case 35:
+        case 41:
+          [8].forEach(function (i) {
+            var $item = $("<div class='item'></div>");
+            var offset = xOffsets[index][i];
+            var width = xOffsets[index][i + 1] - xOffsets[index][i] + 1;
+            $item.css('left', offset).css('width', width).css('background', 'yellow');
+            $line.append($item);
+          });
+          break;
+      }
+    });
+  }
+
+  function textA() {
+    lines.forEach(function ($line, index) {
+      switch (index) {
+        case 28:
+        case 34:
+        case 40:
+        case 46:
+          [6, 7, 8].forEach(function (i) {
+            var $item = $("<div class='item'></div>");
+            var offset = xOffsets[index][i];
+            var width = xOffsets[index][i + 1] - xOffsets[index][i] + 1;
+            $item.css('left', offset).css('width', width).css('background', 'yellow');
+            $line.append($item);
+          });
+          break;
+        case 27:
+        case 33:
+        case 39:
+        case 45:
+          [3, 4, 5].forEach(function (i) {
+            var $item = $("<div class='item'></div>");
+            var offset = xOffsets[index][i];
+            var width = xOffsets[index][i + 1] - xOffsets[index][i] + 1;
+            $item.css('left', offset).css('width', width).css('background', 'yellow');
+            $line.append($item);
+          });
+          break;
+        case 26:
+        case 32:
+        case 38:
+        case 44:
+          [2, 5].forEach(function (i) {
+            var $item = $("<div class='item'></div>");
+            var offset = xOffsets[index][i];
+            var width = xOffsets[index][i + 1] - xOffsets[index][i] + 1;
+            $item.css('left', offset).css('width', width).css('background', 'yellow');
+            $line.append($item);
+          });
+          break;
+        case 25:
+        case 31:
+        case 37:
+        case 43:
+          [2, 5].forEach(function (i) {
+            var $item = $("<div class='item'></div>");
+            var offset = xOffsets[index][i];
+            var width = xOffsets[index][i + 1] - xOffsets[index][i] + 1;
+            $item.css('left', offset).css('width', width).css('background', 'yellow');
+            $line.append($item);
+          });
+          break;
+        case 24:
+        case 30:
+        case 36:
+        case 42:
+          [3, 4, 5].forEach(function (i) {
+            var $item = $("<div class='item'></div>");
+            var offset = xOffsets[index][i];
+            var width = xOffsets[index][i + 1] - xOffsets[index][i] + 1;
+            $item.css('left', offset).css('width', width).css('background', 'yellow');
+            $line.append($item);
+          });
+          break;
+        case 23:
+        case 29:
+        case 35:
+        case 41:
+          [6, 7, 8].forEach(function (i) {
+            var $item = $("<div class='item'></div>");
+            var offset = xOffsets[index][i];
+            var width = xOffsets[index][i + 1] - xOffsets[index][i] + 1;
+            $item.css('left', offset).css('width', width).css('background', 'yellow');
+            $line.append($item);
+          });
+          break;
+      }
+    });
+  }
+
+  function textB() {
+    lines.forEach(function ($line, index) {
+      switch (index) {
+        case 28:
+        case 34:
+        case 40:
+        case 46:
+          [2, 3, 4, 5, 6, 7, 8].forEach(function (i) {
+            var $item = $("<div class='item'></div>");
+            var offset = xOffsets[index][i];
+            var width = xOffsets[index][i + 1] - xOffsets[index][i] + 1;
+            $item.css('left', offset).css('width', width).css('background', 'yellow');
+            $line.append($item);
+          });
+          break;
+        case 27:
+        case 33:
+        case 39:
+        case 45:
+          [2, 5, 8].forEach(function (i) {
+            var $item = $("<div class='item'></div>");
+            var offset = xOffsets[index][i];
+            var width = xOffsets[index][i + 1] - xOffsets[index][i] + 1;
+            $item.css('left', offset).css('width', width).css('background', 'yellow');
+            $line.append($item);
+          });
+          break;
+        case 26:
+        case 32:
+        case 38:
+        case 44:
+          [2, 5, 8].forEach(function (i) {
+            var $item = $("<div class='item'></div>");
+            var offset = xOffsets[index][i];
+            var width = xOffsets[index][i + 1] - xOffsets[index][i] + 1;
+            $item.css('left', offset).css('width', width).css('background', 'yellow');
+            $line.append($item);
+          });
+          break;
+        case 25:
+        case 31:
+        case 37:
+        case 43:
+          [2, 5, 8].forEach(function (i) {
+            var $item = $("<div class='item'></div>");
+            var offset = xOffsets[index][i];
+            var width = xOffsets[index][i + 1] - xOffsets[index][i] + 1;
+            $item.css('left', offset).css('width', width).css('background', 'yellow');
+            $line.append($item);
+          });
+          break;
+        case 24:
+        case 30:
+        case 36:
+        case 42:
+          [2, 5, 8].forEach(function (i) {
+            var $item = $("<div class='item'></div>");
+            var offset = xOffsets[index][i];
+            var width = xOffsets[index][i + 1] - xOffsets[index][i] + 1;
+            $item.css('left', offset).css('width', width).css('background', 'yellow');
+            $line.append($item);
+          });
+          break;
+        case 23:
+        case 29:
+        case 35:
+        case 41:
+          [3, 4, 6, 7].forEach(function (i) {
+            var $item = $("<div class='item'></div>");
+            var offset = xOffsets[index][i];
+            var width = xOffsets[index][i + 1] - xOffsets[index][i] + 1;
+            $item.css('left', offset).css('width', width).css('background', 'yellow');
+            $line.append($item);
+          });
+          break;
+      }
+    });
+  }
+
+  function text3() {
+    lines.forEach(function ($line, index) {
+      switch (index) {
+        case 28:
+        case 34:
+        case 40:
+        case 46:
+          [3, 7].forEach(function (i) {
+            var $item = $("<div class='item'></div>");
+            var offset = xOffsets[index][i];
+            var width = xOffsets[index][i + 1] - xOffsets[index][i] + 1;
+            $item.css('left', offset).css('width', width).css('background', 'yellow');
+            $line.append($item);
+          });
+          break;
+        case 27:
+        case 33:
+        case 39:
+        case 45:
+          [2, 5, 8].forEach(function (i) {
+            var $item = $("<div class='item'></div>");
+            var offset = xOffsets[index][i];
+            var width = xOffsets[index][i + 1] - xOffsets[index][i] + 1;
+            $item.css('left', offset).css('width', width).css('background', 'yellow');
+            $line.append($item);
+          });
+          break;
+        case 26:
+        case 32:
+        case 38:
+        case 44:
+          [2, 5, 8].forEach(function (i) {
+            var $item = $("<div class='item'></div>");
+            var offset = xOffsets[index][i];
+            var width = xOffsets[index][i + 1] - xOffsets[index][i] + 1;
+            $item.css('left', offset).css('width', width).css('background', 'yellow');
+            $line.append($item);
+          });
+          break;
+        case 25:
+        case 31:
+        case 37:
+        case 43:
+          [2, 5, 8].forEach(function (i) {
+            var $item = $("<div class='item'></div>");
+            var offset = xOffsets[index][i];
+            var width = xOffsets[index][i + 1] - xOffsets[index][i] + 1;
+            $item.css('left', offset).css('width', width).css('background', 'yellow');
+            $line.append($item);
+          });
+          break;
+        case 24:
+        case 30:
+        case 36:
+        case 42:
+          [2, 5, 8].forEach(function (i) {
+            var $item = $("<div class='item'></div>");
+            var offset = xOffsets[index][i];
+            var width = xOffsets[index][i + 1] - xOffsets[index][i] + 1;
+            $item.css('left', offset).css('width', width).css('background', 'yellow');
+            $line.append($item);
+          });
+          break;
+        case 23:
+        case 29:
+        case 35:
+        case 41:
+          [3, 4, 6, 7].forEach(function (i) {
+            var $item = $("<div class='item'></div>");
+            var offset = xOffsets[index][i];
+            var width = xOffsets[index][i + 1] - xOffsets[index][i] + 1;
+            $item.css('left', offset).css('width', width).css('background', 'yellow');
+            $line.append($item);
+          });
+          break;
+      }
+    });
+  }
+
+  function text0() {
+    lines.forEach(function ($line, index) {
+      switch (index) {
+        case 28:
+        case 34:
+        case 40:
+        case 46:
+          [3, 4, 5, 6, 7].forEach(function (i) {
+            var $item = $("<div class='item'></div>");
+            var offset = xOffsets[index][i];
+            var width = xOffsets[index][i + 1] - xOffsets[index][i] + 1;
+            $item.css('left', offset).css('width', width).css('background', 'yellow');
+            $line.append($item);
+          });
+          break;
+        case 27:
+        case 33:
+        case 39:
+        case 45:
+          [2, 4, 8].forEach(function (i) {
+            var $item = $("<div class='item'></div>");
+            var offset = xOffsets[index][i];
+            var width = xOffsets[index][i + 1] - xOffsets[index][i] + 1;
+            $item.css('left', offset).css('width', width).css('background', 'yellow');
+            $line.append($item);
+          });
+          break;
+        case 26:
+        case 32:
+        case 38:
+        case 44:
+          [2, 5, 8].forEach(function (i) {
+            var $item = $("<div class='item'></div>");
+            var offset = xOffsets[index][i];
+            var width = xOffsets[index][i + 1] - xOffsets[index][i] + 1;
+            $item.css('left', offset).css('width', width).css('background', 'yellow');
+            $line.append($item);
+          });
+          break;
+        case 25:
+        case 31:
+        case 37:
+        case 43:
+          [2, 5, 8].forEach(function (i) {
+            var $item = $("<div class='item'></div>");
+            var offset = xOffsets[index][i];
+            var width = xOffsets[index][i + 1] - xOffsets[index][i] + 1;
+            $item.css('left', offset).css('width', width).css('background', 'yellow');
+            $line.append($item);
+          });
+          break;
+        case 24:
+        case 30:
+        case 36:
+        case 42:
+          [2, 6, 8].forEach(function (i) {
+            var $item = $("<div class='item'></div>");
+            var offset = xOffsets[index][i];
+            var width = xOffsets[index][i + 1] - xOffsets[index][i] + 1;
+            $item.css('left', offset).css('width', width).css('background', 'yellow');
+            $line.append($item);
+          });
+          break;
+        case 23:
+        case 29:
+        case 35:
+        case 41:
+          [3, 4, 5, 6, 7].forEach(function (i) {
+            var $item = $("<div class='item'></div>");
+            var offset = xOffsets[index][i];
+            var width = xOffsets[index][i + 1] - xOffsets[index][i] + 1;
+            $item.css('left', offset).css('width', width).css('background', 'yellow');
+            $line.append($item);
+          });
+          break;
+      }
+    });
+  }
+
+  function text7() {
+    lines.forEach(function ($line, index) {
+      switch (index) {
+        case 28:
+        case 34:
+        case 40:
+        case 46:
+          [2, 3].forEach(function (i) {
+            var $item = $("<div class='item'></div>");
+            var offset = xOffsets[index][i];
+            var width = xOffsets[index][i + 1] - xOffsets[index][i] + 1;
+            $item.css('left', offset).css('width', width).css('background', 'yellow');
+            $line.append($item);
+          });
+          break;
+        case 27:
+        case 33:
+        case 39:
+        case 45:
+          [2].forEach(function (i) {
+            var $item = $("<div class='item'></div>");
+            var offset = xOffsets[index][i];
+            var width = xOffsets[index][i + 1] - xOffsets[index][i] + 1;
+            $item.css('left', offset).css('width', width).css('background', 'yellow');
+            $line.append($item);
+          });
+          break;
+        case 26:
+        case 32:
+        case 38:
+        case 44:
+          [2].forEach(function (i) {
+            var $item = $("<div class='item'></div>");
+            var offset = xOffsets[index][i];
+            var width = xOffsets[index][i + 1] - xOffsets[index][i] + 1;
+            $item.css('left', offset).css('width', width).css('background', 'yellow');
+            $line.append($item);
+          });
+          break;
+        case 25:
+        case 31:
+        case 37:
+        case 43:
+          [2, 6, 7, 8].forEach(function (i) {
+            var $item = $("<div class='item'></div>");
+            var offset = xOffsets[index][i];
+            var width = xOffsets[index][i + 1] - xOffsets[index][i] + 1;
+            $item.css('left', offset).css('width', width).css('background', 'yellow');
+            $line.append($item);
+          });
+          break;
+        case 24:
+        case 30:
+        case 36:
+        case 42:
+          [2, 4, 5].forEach(function (i) {
+            var $item = $("<div class='item'></div>");
+            var offset = xOffsets[index][i];
+            var width = xOffsets[index][i + 1] - xOffsets[index][i] + 1;
+            $item.css('left', offset).css('width', width).css('background', 'yellow');
+            $line.append($item);
+          });
+          break;
+        case 23:
+        case 29:
+        case 35:
+        case 41:
+          [2, 3].forEach(function (i) {
+            var $item = $("<div class='item'></div>");
+            var offset = xOffsets[index][i];
+            var width = xOffsets[index][i + 1] - xOffsets[index][i] + 1;
+            $item.css('left', offset).css('width', width).css('background', 'yellow');
+            $line.append($item);
+          });
+          break;
+      }
+    });
+  }
+
+</script>
+</body>
+</html>
