@@ -31,7 +31,7 @@
 <div id="box"></div>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
 <script>
-  var yOffsets = [39, 54, 70, 86, 100, 118, 134, 148, 163, 178, 192, 207, 222, 237, 253, 267, 282, 295, 307, 323, 337, 352, 365, 379, 392, 407, 421, 436, 449, 457, 470, 484, 496, 510, 523, 532, 544, 557, 569, 582, 595, 603, 614, 626, 639, 651, 663];
+  var yOffsets = [41, 60, 78, 97, 114, 133, 138, 154, 172, 189, 206, 223, 236, 249, 262, 274, 287, 311, 322, 336, 347, 360, 371, 382, 393, 404, 415, 426, 435, 462, 472, 482, 492, 502, 511, 538, 547, 558, 568, 577, 585, 611, 619, 629, 639, 648, 656];
   var xOffsets = [
     [192, 276, 347, 414, 477, 540, 601, 661, 724, 789],
     [208, 285, 353, 419, 481, 542, 603, 659, 719, 783],
@@ -81,7 +81,7 @@
     [136, 214, 289, 363, 439, 518, 594, 665, 736, 805],
     [112, 193, 274, 353, 433, 515, 594, 666, 742, 816]
   ];
-  var t = 500;
+  var t = 100;
   var lines = yOffsets.map(function (y, index) {
     var $line = $("<div class='line' id=line" + (index + 1) + "></div>");
     $line.css('top', y);
@@ -95,26 +95,26 @@
     fireLine(i, 'yellow');
   });
 
-  setTimeout(function () {
-    $('.item').css('background', 'black');
-  }, 47 * t);
-  setTimeout(function () {
-    $('.item').css('background', '#33FFCC');
-  }, 48 * t);
-  setTimeout(function () {
-    lines.forEach(function ($line) {
-      off(0);
-      function off(index) {
-        $line.find('.item').eq(index).css('background', 'black');
-        $line.find('.item').eq(8 - index).css('background', 'black');
-        if (index < 4) {
-          setTimeout(function () {
-            off(index + 1);
-          }, t);
-        }
-      }
-    });
-  }, 50 * t);
+//  setTimeout(function () {
+//    $('.item').css('background', 'black');
+//  }, 47 * t);
+//  setTimeout(function () {
+//    $('.item').css('background', '#33FFCC');
+//  }, 48 * t);
+//  setTimeout(function () {
+//    lines.forEach(function ($line) {
+//      off(0);
+//      function off(index) {
+//        $line.find('.item').eq(index).css('background', 'black');
+//        $line.find('.item').eq(8 - index).css('background', 'black');
+//        if (index < 4) {
+//          setTimeout(function () {
+//            off(index + 1);
+//          }, t);
+//        }
+//      }
+//    });
+//  }, 50 * t);
 
   function fireLine(i, color) {
     var $line = lines[i];
