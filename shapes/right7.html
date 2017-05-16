@@ -82,7 +82,7 @@
     [112, 193, 274, 353, 433, 515, 594, 666, 742, 816]
   ];
 
-  var t = 1000;
+  var t = 200;
 
   var lines = $.map(yOffsets, function (y, index) {
     var $line = $("<div class='line' id=line" + index + "></div>");
@@ -773,35 +773,31 @@
   }
 
   function blink() {
-//    $('.item').css('transition-duration', t / 1000 + 's');
-//    setTimeout(function () {
-//      $('.item').css('background', 'white');
-//    }, t);
-//    setTimeout(function () {
-//      $('.item').css('background', 'black');
-//    }, t * 2);
-//    setTimeout(function () {
-//      $('.item').css('background', 'white');
-//    }, t * 3);
-//    setTimeout(function () {
-//      $('.item').css('background', 'black');
-//    }, t * 4);
-//    setTimeout(function () {
-//      $('.item').css('background', 'white');
-//    }, t * 5);
-//    setTimeout(function () {
-//      $('.item').css('background', 'black');
-//    }, t * 6);
-//    setTimeout(function () {
-//      $('.item').css('background', 'white');
-//    }, t * 7);
-//    setTimeout(function () {
-//      $('.item').css('background', 'black');
-//    }, t * 8);
-//    setTimeout(function () {
-//      $('.item').remove();
-//    }, t * 9);
-    $('.item').css('background', 'white');
+    $('.item').css('transition-duration', t / 1000 + 's');
+    setTimeout(function () {
+      $('.item').css('background', 'white');
+    }, t);
+    setTimeout(function () {
+      $('.item').css('background', 'black');
+    }, t * 2);
+    setTimeout(function () {
+      $('.item').css('background', 'white');
+    }, t * 3);
+    setTimeout(function () {
+      $('.item').css('background', 'black');
+    }, t * 4);
+    setTimeout(function () {
+      $('.item').css('background', 'white');
+    }, t * 5);
+    setTimeout(function () {
+      $('.item').css('background', 'black');
+    }, t * 6);
+    setTimeout(function () {
+      $('.item').css('background', 'white');
+    }, t * 7);
+    setTimeout(function () {
+      $('.item').css('background', 'black');
+    }, t * 8);
     setTimeout(function () {
       $('.item').remove();
     }, t * 9);
