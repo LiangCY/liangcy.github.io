@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>检测直线</title>
+  <title>波浪</title>
   <style>
     * {
       margin: 0;
@@ -16,13 +16,22 @@
     .line {
       position: absolute;
       height: 3px;
-      transition: background .3s ease;
     }
+
+    .dot {
+      position: absolute;
+      top: -1px;
+      width: 5px;
+      height: 5px;
+      background: #15A848;
+    }
+
   </style>
 </head>
 <body>
 <div id="box"></div>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/velocity/1.5.0/velocity.min.js"></script>
 <script>
   var yOffsets = [36, 56, 74, 92, 110, 128, 143, 160, 177, 194, 210, 227, 242, 258, 275, 290, 306, 324, 338, 354, 369, 383, 398, 413, 426, 442, 457, 472, 488, 500, 513, 528, 542, 556, 571, 582, 595, 609, 623, 636, 648, 660, 672, 686, 698, 713, 726];
   var xOffsets = [
@@ -57,7 +66,7 @@
     [445, 531, 619, 714, 807, 905, 998, 1098, 1197, 1297],
     [511, 573, 640, 710, 785, 862, 929, 1002, 1080, 1155],
     [502, 566, 637, 710, 788, 869, 939, 1017, 1097, 1173],
-    [488, 559, 633, 713, 791, 876, 952, 1034, 1144, 1194],
+    [488, 559, 633, 713, 791, 876, 952, 1034, 1114, 1194],
     [475, 549, 629, 716, 796, 885, 965, 1053, 1139, 1223],
     [464, 541, 626, 715, 800, 892, 979, 1071, 1160, 1250],
     [453, 532, 622, 712, 804, 901, 999, 1095, 1187, 1281],
@@ -74,31 +83,113 @@
     [470, 554, 632, 713, 800, 889, 976, 1065, 1145, 1229],
     [459, 546, 630, 714, 803, 896, 988, 1080, 1168, 1258]
   ];
-  var t = 600;
-  var lines = yOffsets.map(function (y, index) {
-    var $line = $("<div class='line' id=line" + (index + 1) + "></div>");
+  var lines = $.map(yOffsets, function (y, index) {
+    var $line = $("<div class='line' id=line" + index + "></div>");
     $line.css('top', y);
     return $line;
   });
   lines.forEach(function ($line) {
     $('#box').append($line);
   });
-
-  lines.forEach(function ($line, i) {
+  lines.forEach(function ($line, index) {
+    var $dot = $("<div class='dot'></div>");
+    var xOffset = xOffsets[index];
+    $dot.css('left', xOffset[0]);
+    $line.append($dot);
+    var delay = 0;
+    switch (index) {
+      case 28:
+      case 34:
+      case 40:
+      case 46:
+        delay = 0;
+        break;
+      case 27:
+      case 33:
+      case 39:
+      case 45:
+        delay = 200;
+        break;
+      case 26:
+      case 32:
+      case 38:
+      case 44:
+        delay = 400;
+        break;
+      case 25:
+      case 31:
+      case 37:
+      case 43:
+        delay = 600;
+        break;
+      case 24:
+      case 30:
+      case 36:
+      case 42:
+        delay = 800;
+        break;
+      case 23:
+      case 29:
+      case 35:
+      case 41:
+        delay = 1000;
+        break;
+      case 0:
+      case 6:
+      case 16:
+      case 22:
+        delay = 1200;
+        break;
+      case 1:
+      case 7:
+      case 15:
+      case 21:
+        delay = 1400;
+        break;
+      case 2:
+      case 8:
+      case 14:
+      case 20:
+        delay = 1600;
+        break;
+      case 3:
+      case 9:
+      case 13:
+      case 19:
+        delay = 1800;
+        break;
+      case 4:
+      case 10:
+      case 12:
+      case 18:
+        delay = 2000;
+        break;
+      case 5:
+      case 11:
+      case 17:
+        delay = 2200;
+        break;
+    }
     setTimeout(function () {
-      blinkLine(i, 'yellow');
-    }, i * t);
+      $dot.velocity({
+        left: xOffset[8] + "px",
+        backgroundColor: '#3CABE7'
+      }, {
+        duration: 1000,
+        easing: "ease-in-out",
+        loop: 50
+      });
+//      $dot.velocity({
+//        width: (xOffset[8] - xOffset[0]) + "px",
+//        backgroundColor: '#66FFCC'
+//      }, {
+//        duration: 1000,
+//        easing: "ease-in-out",
+//        loop: 8
+//      });
+    }, delay);
   });
 
-  function blinkLine(i, color) {
-    var $line = lines[i];
-    $line.css('background', color);
-    $line.css('left', xOffsets[i][0]);
-    $line.css('width', xOffsets[i][9] - xOffsets[i][0]);
-    setTimeout(function () {
-      $line.css('background', 'black');
-    }, t)
-  }
 </script>
 </body>
 </html>

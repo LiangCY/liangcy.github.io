@@ -23,7 +23,7 @@
       top: -1px;
       width: 5px;
       height: 5px;
-      background: yellow;
+      background: #15A848;
     }
 
   </style>
@@ -83,6 +83,9 @@
     [136, 214, 289, 363, 439, 518, 594, 665, 736, 805],
     [112, 193, 274, 353, 433, 515, 594, 666, 742, 816]
   ];
+  xOffsets = xOffsets.map(function (item) {
+    return item.reverse();
+  });
   var lines = $.map(yOffsets, function (y, index) {
     var $line = $("<div class='line' id=line" + index + "></div>");
     $line.css('top', y);
@@ -172,20 +175,21 @@
     }
     setTimeout(function () {
       $dot.velocity({
-        left: xOffset[8] + "px"
+        left: xOffset[8] + "px",
+        backgroundColor: '#3CABE7'
       }, {
         duration: 1000,
         easing: "ease-in-out",
-        loop: 8
+        loop: 50
       });
-      $dot.velocity({
-        width: (xOffset[8] - xOffset[0]) + "px",
-        backgroundColor: '#66FFCC'
-      }, {
-        duration: 1000,
-        easing: "ease-in-out",
-        loop: 8
-      });
+//      $dot.velocity({
+//        width: (xOffset[8] - xOffset[0]) + "px",
+//        backgroundColor: '#66FFCC'
+//      }, {
+//        duration: 1000,
+//        easing: "ease-in-out",
+//        loop: 8
+//      });
     }, delay);
   });
 
