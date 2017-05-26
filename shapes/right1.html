@@ -95,26 +95,26 @@
     fireLine(i, 'yellow');
   });
 
-//  setTimeout(function () {
-//    $('.item').css('background', 'black');
-//  }, 47 * t);
-//  setTimeout(function () {
-//    $('.item').css('background', '#33FFCC');
-//  }, 48 * t);
-//  setTimeout(function () {
-//    lines.forEach(function ($line) {
-//      off(0);
-//      function off(index) {
-//        $line.find('.item').eq(index).css('background', 'black');
-//        $line.find('.item').eq(8 - index).css('background', 'black');
-//        if (index < 4) {
-//          setTimeout(function () {
-//            off(index + 1);
-//          }, t);
-//        }
-//      }
-//    });
-//  }, 50 * t);
+  setTimeout(function () {
+    $('.item').css('background', 'black');
+  }, 47 * t);
+  setTimeout(function () {
+    $('.item').css('background', '#33FFCC');
+  }, 48 * t);
+  setTimeout(function () {
+    lines.forEach(function ($line) {
+      off(0);
+      function off(index) {
+        $line.find('.item').eq(index).css('background', 'black');
+        $line.find('.item').eq(8 - index).css('background', 'black');
+        if (index < 4) {
+          setTimeout(function () {
+            off(index + 1);
+          }, t);
+        }
+      }
+    });
+  }, 50 * t);
 
   function fireLine(i, color) {
     var $line = lines[i];
